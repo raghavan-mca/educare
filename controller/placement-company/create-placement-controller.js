@@ -5,8 +5,8 @@ const apiError = require('../../error/api-error')
 class company_placement {
     async createcompanyPlacement(req, res, next) {
 
+        
         let payload = req.body
-
 
         try {
 

@@ -15,9 +15,14 @@ class company_placement_services {
             let randomword = randomstring.generate(2).toUpperCase()
             let placement_code = `${word}${random_number}${randomword}`
             let id = `${word}${random_number}${random_number}${random_number1}${randomword}${word}${randomword}`
-            let date = new Date()
-
-
+            if (payload.placement_date || payload.registration_date) {
+                if (payload.placement_date) {
+                    payload['placement_timestamp'] = new Date(`${payload.placement_date},00:00:00:00`).getTime()
+                }
+                if (payload.registration_date) {
+                    payload['registration_timestamp'] = new Date(`${payload.registration_date},'00:00:00:00`).getTime()
+                }
+            }
             payload.placement_id = placement_code
             let query = {
                 "company_name": payload.company_name,
@@ -89,86 +94,85 @@ class company_placement_services {
             let date = new Date().getDate()
             let day = new Date().getMonth() + 1
             let year = new Date().getFullYear()
-            let today = `${year}-${day}-${date}`
+            let today_generate = `${year}-${day}-${date}`
+            let today = new Date(`${today_generate},00:00:00:00`).getTime()
+
+
 
             function last_month() {
                 if (day === 1) {
-                    let last_month_data = `${year-1}-${day-1}-${date}`
+                    let last_month_data = new Date(`${year-1}-${day-1}-${date},00:00:00:00`).getTime()
                     return last_month_data
                 } else {
-                    let last_month_data = `${year}-${day-1}-${date}`
+                    let last_month_data = new Date(`${year-1}-${day-1}-${date},00:00:00:00`).getTime()
                     return last_month_data
                 }
             }
             let last_month_date = last_month()
             let expire_date = {
-                'placement_date': {
+                'placement_timestamp': {
                     $lte: last_month_date
                 }
             }
             let register_date = {
-                'registration_date': {
+                'registration_timestamp': {
                     $lt: today
                 }
             }
             let placement_date = {
-                'placement_date': {
+                'placement_timestamp': {
                     $lte: today
                 }
             }
-
             const placement_expire_date_find = await company_placement_model.find(expire_date)
             const placement_register_date_find = await company_placement_model.find(register_date)
             const placement_date_find = await company_placement_model.find(placement_date)
 
+            // if (placement_register_date_find.length > 0 || placement_date_find.length > 0 || placement_expire_date_find.length > 0) {
 
-            if (placement_register_date_find.length > 0 || placement_date_find.length > 0 || placement_expire_date_find.length > 0) {
+            //     if (placement_register_date_find.length > 0) {
+            //         for (let i = 0; i < placement_register_date_find.length; i++) {
+            //             const element = placement_register_date_find[i];
+            //             const update_registration_status = await company_placement_model.findOneAndUpdate({
+            //                 'registration_timestamp': element.registration_timestamp
+            //             }, {
+            //                 'registration_status': 1
+            //             }, {
+            //                 upsert: true
+            //             })
 
-                if (placement_register_date_find.length > 0) {
-                    for (let i = 0; i < placement_register_date_find.length; i++) {
-                        const element = placement_register_date_find[i];
-                        const update_registration_status = await company_placement_model.findOneAndUpdate({
-                            'registration_date': element.registration_date
-                        }, {
-                            'registration_status': 1
-                        }, {
-                            upsert: true
-                        })
+            //         }
+            //     }
+            //     if (placement_date_find.length > 0) {
+            //         for (let i = 0; i < placement_date_find.length; i++) {
+            //             const element = placement_date_find[i];
+            //             const update_placement_result_status = await company_placement_model.findOneAndUpdate({
+            //                 'placement_timestamp': element.placement_timestamp
+            //             }, {
+            //                 'placement_status': 1
+            //             }, {
+            //                 upsert: true
+            //             })
+            //         }
+            //     }
+            //     if (placement_expire_date_find.length > 0) {
+            //         for (let i = 0; i < placement_expire_date_find.length; i++) {
+            //             const element = placement_expire_date_find[i];
+            //             const update_registration_expire_status = await company_placement_model.findOneAndUpdate({
+            //                 'placement_timestamp': element.placement_timestamp
+            //             }, {
+            //                 'placement_status': 2
+            //             }, {
+            //                 upsert: true
+            //             })
 
-                    }
-                }
-                if (placement_date_find.length > 0) {
-                    for (let i = 0; i < placement_date_find.length; i++) {
-                        const element = placement_date_find[i];
-                        const update_placement_result_status = await company_placement_model.findOneAndUpdate({
-                            'placement_date': element.placement_date
-                        }, {
-                            'placement_status': 1
-                        }, {
-                            upsert: true
-                        })
-                    }
-                }
-                if (placement_expire_date_find.length > 0) {
-                    for (let i = 0; i < placement_expire_date_find.length; i++) {
-                        const element = placement_expire_date_find[i];
-                        const update_registration_expire_status = await company_placement_model.findOneAndUpdate({
-                            'placement_date': element.placement_date
-                        }, {
-                            'placement_status': 2
-                        }, {
-                            upsert: true
-                        })
+            //         }
+            //     }
+            // }
 
-                    }
-                }
-            }
-
-
-
-
+            let datenumber = new Date(`${query.placement_date},00:00:00:00`).getTime()
             let salaryfilter = query.min_salary || query.max_salary
-            let datefilter = query.placement_date
+            let datefilter = query.placement_date;
             let statusfilter = query.placement_status
             let opentoallfilter = query.open_to_all
             let percentagefilter = query.ten || query.twelve || query.ug || query.pg || query.diploma
@@ -184,7 +188,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -194,7 +198,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -635,7 +639,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -645,7 +649,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -684,7 +688,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -694,7 +698,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -1120,7 +1124,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -1130,7 +1134,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.open_to_all) {
                         let opentoall = Number(query.open_to_all)
@@ -1558,7 +1562,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -2000,7 +2004,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && statusfilter && opentoallfilter && percentagefilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -2442,7 +2446,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -2452,7 +2456,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -2476,7 +2480,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -2486,7 +2490,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.open_to_all) {
                         let opentoall = Number(query.open_to_all)
@@ -2511,7 +2515,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -2521,7 +2525,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.ten || query.twelve ||
                         query.ug || query.pg || query.diploma) {
@@ -2933,7 +2937,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -2979,7 +2983,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -3412,7 +3416,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -3840,7 +3844,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && statusfilter && opentoallfilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -3873,7 +3877,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && statusfilter && percentagefilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -4293,7 +4297,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && opentoallfilter && percentagefilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.open_to_all) {
                         let opentoall = Number(query.open_to_all)
@@ -5153,7 +5157,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -5163,7 +5167,7 @@ class company_placement_services {
                         }
                     }
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                 } else if (salaryfilter && statusfilter) {
                     if (query.min_salary || query.max_salary) {
@@ -5173,7 +5177,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -5204,7 +5208,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -5236,7 +5240,7 @@ class company_placement_services {
                             filter['salary.min_salary'] = {
                                 $gte: minimum_salary,
                             }
-                            filter['salary.max_salary'] ={
+                            filter['salary.max_salary'] = {
                                 $lte: maximum_salary
                             }
                         } else {
@@ -5650,7 +5654,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && statusfilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.placement_status) {
                         let status = Number(query.placement_status)
@@ -5668,7 +5672,7 @@ class company_placement_services {
                     };
                 } else if (datefilter && opentoallfilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.open_to_all) {
                         let opentoall = Number(query.open_to_all)
@@ -5687,7 +5691,7 @@ class company_placement_services {
                     }
                 } else if (datefilter && percentagefilter) {
                     if (query.placement_date) {
-                        filter['placement_date'] = query.placement_date
+                        filter['placement_timestamp'] = datenumber;
                     }
                     if (query.ten || query.twelve ||
                         query.ug || query.pg || query.diploma) {
@@ -6960,16 +6964,16 @@ class company_placement_services {
                         }
                     }
                 } else if (salaryfilter) {
-                   
+
                     let minimum_salary = Number(query.min_salary)
                     let maximum_salary = Number(query.max_salary)
-                    
-                   
+
+
                     if (minimum_salary && maximum_salary) {
                         filter['salary.min_salary'] = {
                             $gte: minimum_salary
                         }
-                        filter['salary.max_salary'] ={
+                        filter['salary.max_salary'] = {
                             $lte: maximum_salary
                         }
                     } else {
@@ -6978,7 +6982,7 @@ class company_placement_services {
                         };
                     }
                 } else if (datefilter) {
-                    filter['placement_date'] = query.placement_date
+                    filter['placement_timestamp'] = datenumber;
                 } else if (statusfilter) {
                     let status = Number(query.placement_status)
                     if (status === 0) {
@@ -7415,48 +7419,41 @@ class company_placement_services {
                 if (placement_register_date_find.length > 0 || placement_date_find.length > 0 || placement_expire_date_find.length > 0) {
 
                     if (placement_register_date_find.length > 0) {
-                        for (let i = 0; i < placement_register_date_find.length; i++) {
-                            const element = placement_register_date_find[i];
-                            const update_registration_status = await company_placement_model.findOneAndUpdate({
-                                'registration_date': element.registration_date
-                            }, {
-                                'registration_status': 1
-                            }, {
-                                upsert: true
-                            })
+                        let element = placement_date_find[0].registration_timestamp
+                        const update_placement_result_status = await company_placement_model.updateMany({
+                            'registration_timestamp': element
+                        }, {
+                            'registration_status': 1
+                        }, {
+                            upsert: true
+                        })
 
-                        }
                     }
                     if (placement_date_find.length > 0) {
-                        for (let i = 0; i < placement_date_find.length; i++) {
-                            const element = placement_date_find[i];
-                            const update_placement_result_status = await company_placement_model.findOneAndUpdate({
-                                'placement_date': element.placement_date
-                            }, {
-                                'placement_status': 1
-                            }, {
-                                upsert: true
-                            })
-                        }
+                        let element = placement_date_find[0].placement_timestamp
+                        const update_placement_result_status = await company_placement_model.updateMany({
+                            'placement_timestamp': element
+                        }, {
+                            'placement_status': 1
+                        }, {
+                            upsert: true
+                        })
                     }
                     if (placement_expire_date_find.length > 0) {
-                        for (let i = 0; i < placement_expire_date_find.length; i++) {
-                            const element = placement_expire_date_find[i];
-                            const update_registration_expire_status = await company_placement_model.findOneAndUpdate({
-                                'placement_date': element.placement_date
-                            }, {
-                                'placement_status': 2
-                            }, {
-                                upsert: true
-                            })
-
-                        }
+                        let element = placement_date_find[0].placement_timestamp
+                        const update_placement_result_status = await company_placement_model.updateMany({
+                            'placement_timestamp': element
+                        }, {
+                            'placement_status': 1
+                        }, {
+                            upsert: true
+                        })
                     }
                 }
+               
 
                 fetch_company_placement = await company_placement_model.find(filter)
-            } else {
-                fetch_company_placement = await company_placement_model.find(filter)
+            } else {fetch_company_placement = await company_placement_model.find(filter)
             }
             return fetch_company_placement
 
@@ -7492,19 +7489,41 @@ class company_placement_services {
         let id = `${word}${random_number}${random_number}${random_number1}${randomword}${word}${randomword}`
 
         try {
-           
+            let date = new Date().getDate()
+            let day = new Date().getMonth() + 1
+            let year = new Date().getFullYear()
+            let today_generate = `${year}-${day}-${date}`
+            let today = new Date(`${today_generate},00:00:00:00`).getTime()
+            if(payload.placement_date){
+                let input_date = new Date(`${payload.placement_date},00:00:00:00:`).getTime()
+                if(today<input_date){
+                    payload['placement_status'] = 0
+                }else{
+                    return{'code':500}
+                }
+            }else if(payload.registration_date){
+                let input_date = new Date(`${payload.registration_date},00:00:00:00:`).getTime()
+                if(today<input_date){
+                    payload['registration_status'] = 0
+                }else{
+                    return{'code':500}
+                }
+            }
             let company_listing_payload = {
                 'company_name': payload.company_name,
                 'website': payload.company_website,
                 'email': payload.company_email
             }
+            payload['placement_timestamp'] = new Date(`${payload.placement_date},00:00:00:00`).getTime()
+            payload['registration_timestamp'] = new Date(`${payload.registration_date},00:00:00:00`).getTime()
+
             let company_placement_find = await company_placement_model.find({
                 'placement_id': params.id
             })
             if (company_placement_find[0].company_name === payload.company_name && company_placement_find[0].company_website ===
                 payload.company_website && company_placement_find[0].company_email === payload.company_email) {
-                   
-                    let company_placement_update = await company_placement_model.findOneAndUpdate({
+
+                let company_placement_update = await company_placement_model.findOneAndUpdate({
                     'placement_id': params.id
                 }, payload)
                 return company_placement_update
@@ -7512,8 +7531,8 @@ class company_placement_services {
             } else if (company_placement_find[0].company_name !==
                 payload.company_name && company_placement_find[0].company_website !==
                 payload.company_website && company_placement_find[0].company_email !== payload.company_email) {
-                   
-                    payload['id'] = id
+
+                payload['id'] = id
                 company_listing_payload['id'] = id
 
                 let company_placement_update = await company_placement_model.findOneAndUpdate({

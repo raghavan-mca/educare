@@ -12,7 +12,6 @@ const company_placement_schema = new Schema({
     },
     placement_date:{
         type:String,
-        index:true
     },
     registration_date:{
         type:String
@@ -88,7 +87,16 @@ const company_placement_schema = new Schema({
         type:String,
         required:true,
         index:true
-    }
+    },
+    registration_timestamp:{
+        type:Number,
+        required:false
+    },
+    placement_timestamp:{
+        type:Number,
+        required:false
+    },
+    
 
 
     

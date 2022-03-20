@@ -3,7 +3,7 @@ const app = express();
 
 const mongoose = require('mongoose')
 
-const apierrorHandler = require('../placement/error/errorhandler')
+const apierrorHandler = require('../educare/error/errorhandler')
 const config = require('./configurations/config')
 app.use(express.json());
 
@@ -33,7 +33,7 @@ mongoose.connect(config.connection).then(() => {
     })
 
 }).catch((err) => {
-
+console.log(err);
     console.log('error in connection');
     return err
 })

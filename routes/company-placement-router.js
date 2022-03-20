@@ -22,7 +22,7 @@ router.post('/educare/new-placement', validate(joi_validation.create_validation)
     create_placement.createcompanyPlacement)
 router.get('/educare/view-placement', validate(joi_validation.fetch_validation),
     fetch_placement.fetchcompanyPlacement)
-router.put('/educare/edit-placement/:id', validate(joi_validation.create_validation), validate(joi_validation.update_validation),
+router.put('/educare/edit-placement/:id', validate(joi_validation.update_body_validation), validate(joi_validation.update_validation),
     update_placement.updatecompanyPlacement)
 router.delete('/educare/delete-placement/:id', validate(joi_validation.delete_validation),
     delete_placement.deletecompanyPlacement)

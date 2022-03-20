@@ -45,7 +45,7 @@ class company_placement {
                     })
                 }
                  else {
-                    return res.status(200).send({
+                     return res.status(200).send({
                         'statuscode':200,
                         'data': company_placement_fetch
                     })
