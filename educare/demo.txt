@@ -1,6 +1,0 @@
-validation to do
-
-register date < placement date
-email
-website
-salery
