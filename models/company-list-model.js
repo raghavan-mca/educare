@@ -20,6 +20,10 @@ const company_list_schema = new Schema({
         unique:true,
         index:true
     },
+    is_select:{
+        type:Number,
+        default:0
+    },
     star:{
         type:Number,
         default:0

@@ -1,4 +1,6 @@
+
 {
+    "placement_listing_payload":{
     "company_name":"educare",
             "job_role":"llll",
             "placement_date":"2022-02-10",
@@ -19,4 +21,10 @@
                 "diploma":23
     },
             "open_to_all":1
+},
+"company_listing_payload":{
+    "company_name":"dog",
+            "website" :"nlkjhnn",
+            "email" :"wkedfnbhonkjnb"
+}
 }

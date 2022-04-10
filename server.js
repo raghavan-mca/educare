@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 
 
-
+console.log(config.connection);
 
 mongoose.connect(config.connection).then(() => {
     console.log('db connected');

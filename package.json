@@ -15,6 +15,7 @@
     "express-validation": "^3.0.8",
     "joi": "^17.6.0",
     "mongoose": "^6.2.4",
+    "nodemon": "^2.0.15",
     "randomstring": "^1.2.2"
   }
 }

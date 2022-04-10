@@ -76,12 +76,12 @@ const company_placement_schema = new Schema({
     registration_status:{
         type:Number,
         default:0,
-        index:true   //1-registration close
+        index:true   //1-registration close /2-registration not open
     },
     placement_status:{
         type:Number,
         default:0,
-        index:true //1-waiting for result // 2-expire
+        index:true //1-waiting for result // 2-expire //3-pending
     },
     id:{
         type:String,
@@ -95,6 +95,11 @@ const company_placement_schema = new Schema({
     placement_timestamp:{
         type:Number,
         required:false
+    },
+    
+    is_select:{
+        type:Number,
+        default:0
     },
     
 
