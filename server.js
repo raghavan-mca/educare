@@ -1,17 +1,26 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 const mongoose = require('mongoose')
 
-const apierrorHandler = require('../educare/error/errorhandler')
+
+const apierrorHandler = require('./error/errorhandler')
 const config = require('./configurations/config')
 app.use(express.json());
+app.use(cors());
 
-const company_placement_router = require('./routes/company-placement-router')
-const company_listing = require('./routes/company-listing-router')
+const company_placement = require('./router/company-placement-router')
+const company_listing = require('./router/company-listing-router')
+const department = require('./router/department-router')
+const batch = require('./router/batch-router')
+const student = require('./router/students-router')
 
-app.use(company_placement_router)
+app.use(company_placement)
 app.use(company_listing)
+app.use(department)
+app.use(batch)
+app.use(student)
 app.use(apierrorHandler)
 
 app.use((req, res, next) => {

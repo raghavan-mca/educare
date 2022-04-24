@@ -1,0 +1,81 @@
+const Joi = require('joi')
+const joi = require('joi')
+
+module.exports = {
+    students_create: {
+        body: joi.object({
+            name: joi.string().required(),
+            age: joi.number().required(),
+            dob: joi.string().required(),
+            gender: joi.number().required(),
+            roll_no: joi.string().required(),
+            percentage: {
+                ten: joi.number().min(1).max(101).required(),
+                twelve: joi.number().min(1).max(101).optional().allow(null),
+                ug: joi.number().min(1).max(101).optional().allow(null),
+                pg: joi.number().min(1).max(101).optional().allow(null),
+                diploma: joi.number().min(1).max(101).optional().allow(null),
+            },
+            mobile: joi.number().required(),
+            alternative_mobile: joi.number().optional().allow(null),
+            email: joi.string().required(),
+            batch_id: joi.string().required(),
+
+        }),
+    },
+    students_fetch: {
+        query: joi.object({
+            batch_id: joi.string().required(),
+            name: joi.string().optional().allow(""),
+            roll_no: joi.string().optional().allow(""),
+
+        })
+    },
+    students_sort: {
+        query: joi.object({
+            batch_id: joi.string().required(),
+            order: Joi.string().required(),
+            field: Joi.string().required()
+        })
+    },
+    students_edit: {
+        body: joi.object({
+            name: joi.string().required(),
+            age: joi.number().required(),
+            dob: joi.string().required(),
+            gender: joi.number().required(),
+            roll_no: joi.string().required(),
+            percentage: {
+                ten: joi.number().min(1).max(101).required(),
+                twelve: joi.number().min(1).max(101).optional().allow(null),
+                ug: joi.number().min(1).max(101).optional().allow(null),
+                pg: joi.number().min(1).max(101).optional().allow(null),
+                diploma: joi.number().min(1).max(101).optional().allow(null),
+            },
+            mobile: joi.number().required(),
+            alternative_mobile: joi.number().optional().allow(null),
+            email: joi.string().required(),
+        }),
+    },
+    students_edit_params: {
+        params: joi.object({
+            id: joi.string().required(),
+        })
+    },
+    students_delete_params: {
+        params: joi.object({
+            student_id:joi.string().required(),
+            id: joi.string().required(),
+        })
+    },
+    students_bulk_delete_params: {
+        params: joi.object({
+            id: joi.string().required(),
+        })
+    },
+    students_bulk_delete_body: {
+        body: joi.object({
+            ids: joi.array().required(),
+        })
+    },
+}

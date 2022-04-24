@@ -12,9 +12,10 @@ const company_placement_schema = new Schema({
     },
     placement_date:{
         type:String,
+       
     },
     registration_date:{
-        type:String
+        type:String,
     },
     salary:{
         min_salary:{

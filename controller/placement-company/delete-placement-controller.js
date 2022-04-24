@@ -14,17 +14,17 @@ class company_placement {
                 return
 
             } else if (params) {
-                const compant_placement_delete = await company_placement_Services.deletecompanyPlacement(params)
+                const company_placement_delete = await company_placement_Services.deletecompanyPlacement(params)
 
-                if (compant_placement_delete.code === 500) {
+                if (company_placement_delete.code === 500) {
                     next(apiError.internal({
                         'statusCode': 500,
-                        'ErrorMessage': compant_placement_delete.ErrorMessage,
+                        'ErrorMessage': company_placement_delete.ErrorMessage,
                         'Error': 'badImplementation'
 
                     }))
                     return
-                } else if (compant_placement_delete.code === 11000) {
+                } else if (company_placement_delete.code === 11000) {
                     next(apiError.conflict({
                         'statuscode': 409,
                         'Error': 'conflict',
@@ -35,7 +35,7 @@ class company_placement {
                 else {
                     return res.status(202).send({
                         'statuscode':202,
-                        'data': compant_placement_delete,
+                        'data': company_placement_delete,
                         'deleted id':params.id
                     })
                 }

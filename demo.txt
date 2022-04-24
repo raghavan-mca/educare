@@ -1,6 +1,26 @@
-validation to do
+1.department 
 
-register date < placement date
-email
-website
-salery
+create = none;
+fetch = none + search api included (dep name)
+edit = _id(params)+payload data 
+delete = _id(params)
+
+2.batch
+
+create = department_id (payload)
+fetch = department_id (query) 
+edit = _id(params)+payload data
+delete  = _id(params)
+
+3.student 
+
+create = batch_id (payload)
+fetch = batch_id(query) + search api included with student name and rollno
+sort = batch_id,order(asc / desc),field (any key in the collection)(query)
+edit = batch_id (params)
+single delete = batch_id , student_id (params)
+bulk delete = batch id (params), student rollno(array"body")
+
+
+
+

@@ -17,7 +17,6 @@ class company_placement_services {
             let id = `${word}${random_number}${random_number}${random_number1}${randomword}${word}${randomword}`
 
             if (payload.placement_date === "" && payload.registration_date === "") {
-
                 payload["placement_timestamp"] = 0
                 payload["placement_status"] = 3
                 payload["registration_timestamp"] = 0
@@ -64,6 +63,7 @@ class company_placement_services {
                 const company_placement_create = new company_placement_model(payload)
                 company_placement = await company_placement_create.save()
             } else {
+
 
                 payload.id = id
                 company_list_data.id = id
@@ -112,25 +112,27 @@ class company_placement_services {
         try {
             let filter = {}
             let fetch_company_placement
-         
+
 
 
             let date_module = new Date()
-            let convert_string = JSON.stringify(date_module).split('T')[0].replace("\"","")
+            let convert_string = JSON.stringify(date_module).split('T')[0].replace("\"", "")
             let month_calculate = new Date(convert_string)
-            month_calculate.setMonth(month_calculate.getMonth()-1)
+            month_calculate.setMonth(month_calculate.getMonth() - 1)
 
             let yesterday_calculate = new Date(convert_string)
-            yesterday_calculate.setDate(yesterday_calculate.getDate()-1)
-            
-            let last_month_stringify = JSON.stringify(month_calculate).split('T')[0].replace("\"","")
-            let yesterday_stringify = JSON.stringify(yesterday_calculate).split('T')[0].replace("\"","")
+            yesterday_calculate.setDate(yesterday_calculate.getDate() - 1)
+
+            let last_month_stringify = JSON.stringify(month_calculate).split('T')[0].replace("\"", "")
+            let yesterday_stringify = JSON.stringify(yesterday_calculate).split('T')[0].replace("\"", "")
             let last_month_date = new Date(`${last_month_stringify}`).getTime()
-            let today =  new Date(`${yesterday_stringify}`).getTime()
-            
+            let today = new Date(`${yesterday_stringify}`).getTime()
+
             let expire_date = {
                 'placement_timestamp': {
+                    $gt: 1,
                     $lte: last_month_date
+
                 }
             }
             let register_date = {
@@ -140,13 +142,13 @@ class company_placement_services {
             }
             let placement_date = {
                 'placement_timestamp': {
-                   $gt:last_month_date ,$lte: today
+                    $gt: last_month_date, $lte: today
                 }
             }
+
             const placement_expire_date_find = await company_placement_model.find(expire_date)
             const placement_register_date_find = await company_placement_model.find(register_date)
             const placement_date_find = await company_placement_model.find(placement_date)
-            
 
 
             let datenumber = new Date(`${query.placement_date},00:00:00:00`).getTime()
@@ -186,6 +188,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -638,6 +642,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -686,6 +692,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -1558,6 +1566,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -1992,6 +2002,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -2444,6 +2456,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -2933,6 +2947,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -2978,6 +2994,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -3833,6 +3851,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -3865,6 +3885,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -4704,6 +4726,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -5172,6 +5196,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -5643,6 +5669,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -6084,6 +6112,8 @@ class company_placement_services {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
                             filter['placement_status'] = status;
+                        } else if (status === 3) {
+                            filter['placement_status'] = status;
                         } else {
                             return {
                                 'code': 400
@@ -6113,6 +6143,8 @@ class company_placement_services {
                         } else if (status === 1) {
                             filter['placement_status'] = status;
                         } else if (status === 2) {
+                            filter['placement_status'] = status;
+                        } else if (status === 3) {
                             filter['placement_status'] = status;
                         } else {
                             return {
@@ -6970,6 +7002,8 @@ class company_placement_services {
                         filter['placement_status'] = status;
                     } else if (status === 2) {
                         filter['placement_status'] = status;
+                    } else if (status === 3) {
+                        filter['placement_status'] = status;
                     } else {
                         return {
                             'code': 400
@@ -7395,9 +7429,7 @@ class company_placement_services {
 
             if (Object.keys(filter).length === 0) {
                 if (placement_register_date_find.length > 0 || placement_date_find.length > 0 || placement_expire_date_find.length > 0) {
-
                     if (placement_register_date_find.length > 0) {
-                        let element = placement_date_find[0].registration_timestamp
                         const update_placement_result_status = await company_placement_model.updateMany(register_date, {
                             'registration_status': 1
                         }, {
@@ -7406,22 +7438,26 @@ class company_placement_services {
 
                     }
                     if (placement_expire_date_find.length > 0) {
-                        let element = placement_date_find[0].placement_timestamp
+
+                        // let element = placement_date_find[0].placement_timestamp
                         const update_placement_result_status = await company_placement_model.updateMany(expire_date, {
                             'placement_status': 2
                         }, {
                             upsert: true
                         })
+
                     }
                     if (placement_date_find.length > 0) {
-                        let element = placement_date_find[0].placement_timestamp
+
+                        // let element = placement_date_find[0].placement_timestamp
                         const update_placement_result_status = await company_placement_model.updateMany(placement_date, {
                             'placement_status': 1
                         }, {
                             upsert: true
                         })
+
                     }
-                     
+
                 }
 
 
@@ -7457,7 +7493,7 @@ class company_placement_services {
     }
     async updatecompanyPlacement(payload, params) {
         try {
-            
+
             let word = payload.company_name.substring(0, 3).toUpperCase()
             let random_number = Math.floor(Math.random() * 1000)
             let random_number1 = Math.floor(Math.random() * 1000)
@@ -7469,7 +7505,7 @@ class company_placement_services {
             let year = new Date().getFullYear()
             let today_generate = `${year}-${day}-${date}`
             let today = new Date(`${today_generate},00:00:00:00`).getTime()
-           if (payload.placement_date === "" && payload.registration_date === "") {
+            if (payload.placement_date === "" && payload.registration_date === "") {
 
                 payload["placement_timestamp"] = 0
                 payload["placement_status"] = 3
@@ -7477,7 +7513,7 @@ class company_placement_services {
                 payload["registration_status"] = 2
 
             }
-            else if(payload.placement_date&& payload.registration_date ){
+            else if (payload.placement_date && payload.registration_date) {
                 payload["placement_status"] = 0
                 payload["registration_status"] = 0
                 payload['placement_timestamp'] = new Date(`${payload.placement_date},00:00:00:00`).getTime()
@@ -7485,24 +7521,24 @@ class company_placement_services {
 
 
             }
-           
-                else if (payload.placement_date === "") {
-                    payload["placement_timestamp"] = 0
-                    payload["placement_status"] = 3
-                    payload["registration_status"] = 0
-                    payload['registration_timestamp'] = new Date(`${payload.registration_date},'00:00:00:00`).getTime()
 
-                }
-                else if (payload.registration_date === "") {
-                    payload["registration_timestamp"] = 0
-                    payload["registration_status"] = 2
-                    payload["placement_status"] = 0
-                    payload['placement_timestamp'] = new Date(`${payload.placement_date},00:00:00:00`).getTime()
+            else if (payload.placement_date === "") {
+                payload["placement_timestamp"] = 0
+                payload["placement_status"] = 3
+                payload["registration_status"] = 0
+                payload['registration_timestamp'] = new Date(`${payload.registration_date},'00:00:00:00`).getTime()
+
+            }
+            else if (payload.registration_date === "") {
+                payload["registration_timestamp"] = 0
+                payload["registration_status"] = 2
+                payload["placement_status"] = 0
+                payload['placement_timestamp'] = new Date(`${payload.placement_date},00:00:00:00`).getTime()
 
 
-                }
+            }
 
-            
+
 
 
             let company_listing_payload = {

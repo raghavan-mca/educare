@@ -29,8 +29,8 @@ module.exports = {
     },
     fetch_validation: {
         query: joi.object({
-            placement_timestamp: joi.number().optional(),
-            registration_timestamp: joi.number().optional(),
+            //placement_timestamp: joi.number().optional(),
+            //registration_timestamp: joi.number().optional(),
             placement_date: joi.string().optional(),
             min_salary: joi.number().optional(),
             max_salary: joi.number().optional(),
