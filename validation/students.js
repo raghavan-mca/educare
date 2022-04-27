@@ -78,4 +78,16 @@ module.exports = {
             ids: joi.array().required(),
         })
     },
+    students_transfer_params:{
+        params: joi.object({
+            id: joi.string().required(),
+        })
+    },
+    students_transfer_body: {
+        body: joi.object({
+            ids: joi.array().required(),
+            field: joi.string().required(),
+            field_value: joi.number().required(),
+        })
+    },
 }

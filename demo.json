@@ -43,7 +43,6 @@
         "alternative_mobile": 2345,
         "email": "iuhgv",
         "batch_id": "ertyu"
-       
     },
     "department": {
         "department_name": "mca",
@@ -55,9 +54,12 @@
         "incharge_mail": "qwertyuiop"
     },
     "batch": {
-        
-        "user_id":"sdfghjk",
+        "user_id": "sdfghjk",
         "batch": "2022",
         "department_id": "62583ce0534f975d1e19a8be"
+    },
+    "mass_transfer": {
+        "field": "intern or placement", 
+        "field_value": 120
     }
 }

@@ -62,9 +62,17 @@ let student_schema = {
     },
     intern_offer_letter: {
         type: Number,
-        default: 0
+        default: -1
     },
     placement_offer_letter: {
+        type: Number,
+        default: -1
+    },
+    intern: {
+        type: Number,
+        default: 0
+    },
+    placement: {
         type: Number,
         default: 0
     },

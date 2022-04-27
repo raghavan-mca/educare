@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const config = require('../configurations/config')
 mongoose.connect(config.connection)
 let db = mongoose.connection;
+const Schema = mongoose.Schema;
+const student_schema = require("../models/students-model")
 
 let batch_model = require("../models/batch-model")
 let department_model = require("../models/department-creation-model")
@@ -125,9 +127,9 @@ class batch_services {
         try {
             let arr = [];
             let batch_fetch = await batch_model.findOne({ _id: params.id });
-            
+
             let batch_name = batch_fetch.batch
-           
+
             let fetch_department = await department_model.findOne({ _id: batch_fetch.department_id })
             fetch_department.batch.find((elm) => {
                 if (elm != batch_name) {
@@ -156,6 +158,134 @@ class batch_services {
                 return result_arr
             }
 
+        } catch (err) {
+            let err_function = new Error(err)
+            let err_message = err_function.message
+            let err_message_arr = err_message.split(':')
+
+            if (err_message_arr[0] === 'ReferenceError') {
+                let error = {
+                    "code": 500,
+                    "ErrorMessage": err_message
+                }
+                return error
+            }
+            if (err_message_arr[0] === 'MongoServerError') {
+                let error = {
+                    "code": 11000,
+                    "ErrorMessage": err_message
+                }
+                return error
+            }
+            return err
+        }
+    }
+    async mass_transfer(payload, params) {
+        try {
+            let batch_fetch = await batch_model.findOne({ _id: params.id })
+            let department_fetch = await department_model.findOne({ _id: batch_fetch.department_id })
+            let limit
+            let focus
+            let count
+            let value
+            if (payload.field === "intern") {
+                count = department_fetch.intern_offer_letter
+                limit = "intern_offer_letter"
+                focus = "focus_student_intern"
+                value = 1
+            } else if (payload.field === "placement") {
+                count = department_fetch.placement_offer_letter
+                limit = "placement_offer_letter"
+                focus = "focus_student_placement"
+                value = 2
+            }
+            let obj = {}
+            obj[`${limit}`] = { $gte: count }
+            if (payload.field_value === 0 && batch_fetch.focus_student === value) {
+                let update_obj = {}
+                update_obj[`${focus}`] = 0
+                try {
+                    let schema_build = new Schema(student_schema)
+                    let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
+                    let update_focus_student = await model.updateMany({ batch_id: params.id }, update_obj)
+                    let update_department = await department_model.findOneAndUpdate({ _id: batch_fetch.department_id }, update_obj);
+                    let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
+                    if (update_focus_student && update_department && update_batch) {
+                        let output = {
+                            skip: 0,
+                            total_student_shifted: batch_fetch.total_student
+                        }
+                        return output
+                    }
+                } catch (err) {
+                    if (err.name === "OverwriteModelError") {
+                        let model = mongoose.model(`${batch_fetch.user_id}_students`)
+                        let update_focus_student = await model.updateMany({ batch_id: params.id }, update_obj)
+                        let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
+                        let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
+                        if (update_focus_student && update_department && update_batch) {
+                            let output = {
+                                skip: 0,
+                                total_student_shifted: batch_fetch.total_student
+                            }
+                            return output
+                        }
+                    }
+                }
+            } else if (payload.field_value != 0) {
+                let update_obj = {}
+                update_obj[`${focus}`] = 1
+
+
+                let update_find_obj = {}
+                update_find_obj[`${limit}`] = { $lt: count }
+                try {
+                    let schema_build = new Schema(student_schema)
+                    let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
+
+                    
+
+                    if (batch_fetch.focus_student === 0) {
+                        
+                        let update_focus_student = await model.updateMany(update_find_obj, update_obj)
+                        let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
+                        let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
+                        if (update_focus_student && update_department && update_batch) {
+                            let output = {
+                                skip:batch_fetch.total_student  - update_focus_student.modifiedCount,
+                                total_student_shifted: update_focus_student.modifiedCount
+                            }
+                            return output
+                        }
+                    }
+                    else {
+                        return "batch already exit in another domine"
+                    }
+                } catch (err) {
+                    if (err.name === "OverwriteModelError") {
+                        let model = mongoose.model(`${batch_fetch.user_id}_students`)
+
+                        
+                       
+                        if (batch_fetch.focus_student === 0) {
+                            let update_focus_student = await model.updateMany(update_find_obj, update_obj)
+                            let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
+                            let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
+                            if (update_focus_student && update_department && update_batch) {
+                                let output = {
+                                    skip:batch_fetch.total_student  - update_focus_student.modifiedCount,
+                                    total_student_shifted: update_focus_student.modifiedCount
+                                }
+                                return output
+                            }
+                        } else {
+                            return "batch already exit in another domine"
+                        }
+                    }
+                }
+            } else {
+                return "already data in a respective domine"
+            }
         } catch (err) {
             let err_function = new Error(err)
             let err_message = err_function.message

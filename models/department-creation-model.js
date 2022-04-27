@@ -7,7 +7,11 @@ const department_schema = new Schema({
         unique:true,
         index:true
     },
-    offer_letter_limit: {
+    intern_offer_letter: {
+        type: Number,
+        default: 0
+    },
+    placement_offer_letter: {
         type: Number,
         default: 0
     },
@@ -23,11 +27,11 @@ const department_schema = new Schema({
         type:Number,
         default:0
     },
-    placement:{
+    focus_student_placement:{
         type:Number,
         default:0
     },
-    internship:{
+    focus_student_intern:{
         type:Number,
         default:0
     },

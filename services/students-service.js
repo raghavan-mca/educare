@@ -16,28 +16,29 @@ class students_services {
             payload["department_id"] = students_data[0].department_id
             payload["batch"] = students_data[0].batch
             payload["user_id"] = students_data[0].user_id
-            if (payload.gender === 1) {
-                let male_department = student_data_department[0].total_male + 1
-                let total_count = student_data_department[0].total_students + 1
-                let male = students_data[0].male + 1
-                let total = students_data[0].total_student + 1
-                let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_male: male_department, total_students: total_count })
-                let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { male: male, total_student: total })
-            } else if (payload.gender === 2) {
-                let female_department = student_data_department[0].total_female + 1
-                let total_count = student_data_department[0].total_students + 1
 
-                let female = students_data[0].female + 1
-                let total = students_data[0].total_student + 1
-                let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
-                let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { female: female, total_student: total })
-
-            }
             try {
                 let schema_build = new Schema(student_schema)
                 let model = mongoose.model(`${students_data[0].user_id}_students`, schema_build)
                 const student_create = new model(payload)
                 const student_listing = await student_create.save()
+                if (payload.gender === 1 && student_listing) {
+                    let male_department = student_data_department[0].total_male + 1
+                    let total_count = student_data_department[0].total_students + 1
+                    let male = students_data[0].male + 1
+                    let total = students_data[0].total_student + 1
+                    let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_male: male_department, total_students: total_count })
+                    let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { male: male, total_student: total })
+                } else if (payload.gender === 2 && student_listing) {
+                    let female_department = student_data_department[0].total_female + 1
+                    let total_count = student_data_department[0].total_students + 1
+
+                    let female = students_data[0].female + 1
+                    let total = students_data[0].total_student + 1
+                    let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
+                    let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { female: female, total_student: total })
+
+                }
                 if (student_listing) {
                     const output = {
                         'statuscode': 200,
@@ -50,7 +51,23 @@ class students_services {
                     let model = mongoose.model(`${students_data[0].user_id}_students`)
                     const student_create = new model(payload)
                     const student_listing = await student_create.save()
+                    if (payload.gender === 1 && student_listing) {
+                        let male_department = student_data_department[0].total_male + 1
+                        let total_count = student_data_department[0].total_students + 1
+                        let male = students_data[0].male + 1
+                        let total = students_data[0].total_student + 1
+                        let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_male: male_department, total_students: total_count })
+                        let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { male: male, total_student: total })
+                    } else if (payload.gender === 2 && student_listing) {
+                        let female_department = student_data_department[0].total_female + 1
+                        let total_count = student_data_department[0].total_students + 1
 
+                        let female = students_data[0].female + 1
+                        let total = students_data[0].total_student + 1
+                        let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
+                        let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { female: female, total_student: total })
+
+                    }
                     if (student_listing) {
                         const output = {
                             'statuscode': 200,
@@ -379,7 +396,7 @@ class students_services {
     }
     async bulk_delete_students_listing(payload, params) {
         let fetch_batch_data = await batch_model.findOne({ _id: params.id })
-       
+
         let fetch_department_data = await department_model.findOne({ _id: fetch_batch_data.department_id })
 
         try {
@@ -387,7 +404,6 @@ class students_services {
             let model = mongoose.model(`${fetch_batch_data.user_id}_students`, schema_build)
             let student_fetch_male = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 1 })
             let student_fetch_female = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 2 })
-console.log(student_fetch_male.length,student_fetch_female.length);
             let delete_student = await model.deleteMany({ "roll_no": payload.ids })
             let total = student_fetch_male.length + student_fetch_female.length
             let male = fetch_batch_data.male - student_fetch_male.length
@@ -412,7 +428,6 @@ console.log(student_fetch_male.length,student_fetch_female.length);
                 let model = mongoose.model(`${fetch_batch_data.user_id}_students`)
                 let student_fetch_male = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 1 })
                 let student_fetch_female = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 2 })
-                console.log(student_fetch_male.length,student_fetch_female.length);
                 let delete_student = await model.deleteMany({ roll_no: payload.ids })
                 let total = student_fetch_male.length + student_fetch_female.length
                 let male = fetch_batch_data.male - student_fetch_male.length
@@ -433,6 +448,110 @@ console.log(student_fetch_male.length,student_fetch_female.length);
         }
 
     }
+    async student_transfer(payload, params) {
+
+        let batch_fetch = await batch_model.findOne({ _id: params.id })
+
+        let department_fetch = await department_model.findOne({ _id: batch_fetch.department_id })
+        let limit
+        let focus
+        let count
+        let value
+        if (payload.field === "intern") {
+
+            count = department_fetch.intern_offer_letter
+            limit = "intern_offer_letter"
+            focus = "focus_student_intern"
+            value = 1
+        } else if (payload.field === "placement") {
+            count = department_fetch.placement_offer_letter
+            limit = "placement_offer_letter"
+            focus = "focus_student_placement"
+            value = 2
+        }
+        let update_find_obj = {}
+        update_find_obj[`${limit}`] = { $lt: count }
+
+        let obj = {}
+        obj[`${limit}`] = { $gte: count }
+
+        if (batch_fetch.focus_student === 0 && department_fetch[`${focus}`] === 0 && payload.field_value != 0) {
+            try {
+
+                let schema_build = new Schema(student_schema)
+                let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
+                let find_limit = await model.find(obj)
+                let update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
+                let update_batch_focus_student = await batch_model.updateMany({ _id: params.id }, { focus_student: value })
+                let update_departmenbt_focus_student = await department_model.updateOne({ _id: batch_fetch.department_id }, { [`${focus}`]: 1 })
+                if (update_focus_student && update_batch_focus_student && update_departmenbt_focus_student) {
+                    let output = {
+                        skip: find_limit.length,
+                        total_student_shifted: payload.ids.length - find_limit.length
+                    }
+                    return output
+                }
+            }
+            catch (err) {
+                if (err.name === 'OverwriteModelError') {
+
+                    let model = mongoose.model(`${batch_fetch.user_id}_students`)
+                    let find_limit = await model.find(obj)
+
+                    let update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
+                    let update_batch_focus_student = await batch_model.updateMany({ _id: params.id }, { focus_student: value })
+                    let update_departmenbt_focus_student = await department_model.updateOne({ _id: batch_fetch.department_id }, { [`${focus}`]: 1 })
+                    if (update_focus_student && update_batch_focus_student && update_departmenbt_focus_student) {
+                        let output = {
+                            skip: find_limit.length,
+                            total_student_shifted: payload.ids.length - find_limit.length
+                        }
+                        return output
+                    }
+                }
+            }
+        } else if (batch_fetch.focus_student === value && department_fetch[`${focus}`] === 1) {
+
+            let update_focus_student
+            try {
+                let schema_build = new Schema(student_schema)
+                let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
+                if (payload.field_value != 0) {
+
+                    update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
+                } else if (payload.field_value === 0) {
+                    update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids } }, { [`${focus}`]: 0 })
+                }
+                if (update_focus_student) {
+                    let output = {
+                        skip: payload.ids.length - update_focus_student.modifiedCount,
+                        total_student_shifted: update_focus_student.modifiedCount
+                    }
+                    return output
+                }
+            }
+            catch (err) {
+                if (err.name === 'OverwriteModelError') {
+                    let model = mongoose.model(`${batch_fetch.user_id}_students`)
+                    if (payload.field_value != 0) {
+                        update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
+                    } else if (payload.field_value === 0) {
+                        update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${focus}`]: 1 }, { [`${focus}`]: 0 })
+                    }
+                    if (update_focus_student) {
+                        let output = {
+                            skip: payload.ids.length - update_focus_student.modifiedCount,
+                            total_student_shifted: update_focus_student.modifiedCount
+                        }
+                        return output
+                    }
+                }
+            }
+        } else {
+            return "already in another domine"
+        }
+    }
+
 }
 
 

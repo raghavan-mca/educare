@@ -5,8 +5,8 @@ module.exports = {
         body: joi.object({
             batch: joi.string().required(),
             department_id: joi.string().required(),
-            year: joi.string().allow(null).optional() ,
-            user_id:joi.string().required(),
+            year: joi.string().allow(null).optional(),
+            user_id: joi.string().required(),
         })
     },
     batch_fetch: {
@@ -29,5 +29,17 @@ module.exports = {
         params: joi.object({
             id: joi.string().required(),
         })
+    },
+    batch_mass_transfer_params: {
+        params: joi.object({
+            id: joi.string().required(),
+        })
+    },
+    batch_mass_transfer: {
+        body: joi.object({
+            field: joi.string().required(),
+            field_value: joi.number().required(),
+        })
     }
+
 }
