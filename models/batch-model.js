@@ -25,6 +25,10 @@ const batch_schema = new Schema({
         type:Number,
         default:0 
     },
+    others:{
+        type:Number,
+        default:0 
+    },
     department_id:{
         type:String,
         required:true,

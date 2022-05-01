@@ -30,6 +30,13 @@ class students_services {
                     let total = students_data[0].total_student + 1
                     let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_male: male_department, total_students: total_count })
                     let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { male: male, total_student: total })
+                    if (student_count_update_department && student_count_update_batch) {
+                        const output = {
+                            'statuscode': 200,
+                            'message': 'success',
+                        }
+                        return output
+                    }
                 } else if (payload.gender === 2 && student_listing) {
                     let female_department = student_data_department[0].total_female + 1
                     let total_count = student_data_department[0].total_students + 1
@@ -38,15 +45,30 @@ class students_services {
                     let total = students_data[0].total_student + 1
                     let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
                     let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { female: female, total_student: total })
-
-                }
-                if (student_listing) {
-                    const output = {
-                        'statuscode': 200,
-                        'message': 'success',
+                    if (student_count_update_department && student_count_update_batch) {
+                        const output = {
+                            'statuscode': 200,
+                            'message': 'success',
+                        }
+                        return output
                     }
-                    return output
+                } else if (payload.gender === 3 && student_listing) {
+                    let others_department = student_data_department[0].total_others + 1
+                    let total_count = student_data_department[0].total_students + 1
+
+                    let others = students_data[0].others + 1
+                    let total = students_data[0].total_student + 1
+                    let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_others: others_department, total_students: total_count })
+                    let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { others: others, total_student: total })
+                    if (student_count_update_department && student_count_update_batch) {
+                        const output = {
+                            'statuscode': 200,
+                            'message': 'success',
+                        }
+                        return output
+                    }
                 }
+
             } catch (err) {
                 if (err.name === "OverwriteModelError") {
                     let model = mongoose.model(`${students_data[0].user_id}_students`)
@@ -59,6 +81,13 @@ class students_services {
                         let total = students_data[0].total_student + 1
                         let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_male: male_department, total_students: total_count })
                         let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { male: male, total_student: total })
+                        if (student_count_update_department && student_count_update_batch) {
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
+                        }
                     } else if (payload.gender === 2 && student_listing) {
                         let female_department = student_data_department[0].total_female + 1
                         let total_count = student_data_department[0].total_students + 1
@@ -67,14 +96,28 @@ class students_services {
                         let total = students_data[0].total_student + 1
                         let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
                         let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { female: female, total_student: total })
-
-                    }
-                    if (student_listing) {
-                        const output = {
-                            'statuscode': 200,
-                            'message': 'success',
+                        if (student_count_update_department && student_count_update_batch) {
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
                         }
-                        return output
+                    } else if (payload.gender === 3 && student_listing) {
+                        let others_department = student_data_department[0].total_others + 1
+                        let total_count = student_data_department[0].total_students + 1
+
+                        let others = students_data[0].others + 1
+                        let total = students_data[0].total_student + 1
+                        let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_others: others_department, total_students: total_count })
+                        let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: payload.batch_id }, { others: others, total_student: total })
+                        if (student_count_update_department && student_count_update_batch) {
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
+                        }
                     }
                 } else {
 
@@ -215,30 +258,66 @@ class students_services {
             try {
                 let schema_build = new Schema(student_schema)
                 let model = mongoose.model(`${fetch_batch_data.user_id}_students`, schema_build)
-                let edit_students = await model.findOneAndUpdate({ batch_id: params.id }, payload, { upsert: true })
+                let edit_students = await model.findOneAndUpdate({ _id: params.student_id }, payload, { upsert: true })
                 if (edit_students.gender === payload.gender) {
-
                     return edit_students
                 } else {
-                    if (payload.gender === 1) {
-                        let male = fetch_batch_data.male - 1
+                    let batch_value
+                    let department_value
+                    if (edit_students.gender === 1) {
+                        batch_value = "male"
+                        department_value = "total_male"
+                    } else if (edit_students.gender === 2) {
+                        batch_value = "female"
+                        department_value = "total_female"
+                    } else if (edit_students.gender === 3) {
+                        batch_value = "others"
+                        department_value = "total_others"
+                    }
+                    if (payload.gender === 2) {
+                        let batch_values = fetch_batch_data[batch_value] - 1
                         let female = fetch_batch_data.female + 1
-                        let department_male = fetch_department_data.total_male - 1
+
+                        let department_values = fetch_department_data[department_value] - 1
                         let department_female = fetch_department_data.total_female + 1
-                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "female": female })
-                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female })
+                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { [batch_value]: batch_values, "female": female })
+                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { [department_value]: department_values, "total_female": department_female })
                         if (update_batch_students && update_department_students) {
-                            return edit_students
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
                         }
-                    } else if (payload.gender === 2) {
+                    } else if (payload.gender === 1) {
                         let male = fetch_batch_data.male + 1
-                        let female = fetch_batch_data.female - 1
+                        let batch_values = fetch_batch_data[batch_value] - 1
+
                         let department_male = fetch_department_data.total_male + 1
-                        let department_female = fetch_department_data.total_female - 1
-                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "female": female })
-                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female })
+                        let department_values = fetch_department_data[department_value] - 1
+                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, [batch_value]: batch_values })
+                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, [department_value]: department_values })
                         if (update_batch_students && update_department_students) {
-                            return edit_students
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
+                        }
+
+                    } else if (payload.gender === 3) {
+                        let others = fetch_batch_data.others + 1
+                        let batch_values = fetch_batch_data[batch_value] - 1
+                        let department_others = fetch_department_data.total_others + 1
+                        let department_values = fetch_department_data[department_value] - 1
+                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "others": others, [batch_value]: batch_values })
+                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_others": department_others, [department_value]: department_values })
+                        if (update_batch_students && update_department_students) {
+                            const output = {
+                                'statuscode': 200,
+                                'message': 'success',
+                            }
+                            return output
                         }
 
                     }
@@ -247,30 +326,68 @@ class students_services {
             } catch (err) {
                 if (err.name === 'OverwriteModelError') {
                     let model = mongoose.model(`${fetch_batch_data.user_id}_students`)
-                    let edit_students = await model.findOneAndUpdate({ batch_id: params.id }, payload, { upsert: true })
+                    let edit_students = await model.findOneAndUpdate({ _id: params.student_id }, payload, { upsert: true })
                     if (edit_students.gender === payload.gender) {
 
                         return edit_students
                     } else {
-                        if (payload.gender === 1) {
-                            let male = fetch_batch_data.male - 1
+                        let batch_value
+                        let department_value
+                        if (edit_students.gender === 1) {
+                            batch_value = "male"
+                            department_value = "total_male"
+                        } else if (edit_students.gender === 2) {
+                            batch_value = "female"
+                            department_value = "total_female"
+                        } else if (edit_students.gender === 3) {
+                            batch_value = "others"
+                            department_value = "total_others"
+                        }
+                        if (payload.gender === 2) {
+                            let batch_values = fetch_batch_data[batch_value] - 1
                             let female = fetch_batch_data.female + 1
-                            let department_male = fetch_department_data.total_male - 1
+
+                            let department_values = fetch_department_data[department_value] - 1
                             let department_female = fetch_department_data.total_female + 1
-                            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "female": female })
-                            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female })
+                            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { [batch_value]: batch_values, "female": female })
+                            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { [department_value]: department_values, "total_female": department_female })
                             if (update_batch_students && update_department_students) {
-                                return edit_students
+                                const output = {
+                                    'statuscode': 200,
+                                    'message': 'success',
+                                }
+                                return output
                             }
-                        } else if (payload.gender === 2) {
+                        } else if (payload.gender === 1) {
                             let male = fetch_batch_data.male + 1
-                            let female = fetch_batch_data.female - 1
+                            let batch_values = fetch_batch_data[batch_value] - 1
+
                             let department_male = fetch_department_data.total_male + 1
-                            let department_female = fetch_department_data.total_female - 1
-                            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "female": female })
-                            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female })
+                            let department_values = fetch_department_data[department_value] - 1
+                            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, [batch_value]: batch_values })
+                            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, [department_value]: department_values })
                             if (update_batch_students && update_department_students) {
-                                return edit_students
+                                const output = {
+                                    'statuscode': 200,
+                                    'message': 'success',
+                                }
+                                return output
+                            }
+
+                        } else if (payload.gender === 3) {
+                            let others = fetch_batch_data.others + 1
+                            let batch_values = fetch_batch_data[batch_value] - 1
+
+                            let department_others = fetch_department_data.total_others + 1
+                            let department_values = fetch_department_data[department_value] - 1
+                            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "others": others, [batch_value]: batch_values })
+                            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_others": department_others, [department_value]: department_values })
+                            if (update_batch_students && update_department_students) {
+                                const output = {
+                                    'statuscode': 200,
+                                    'message': 'success',
+                                }
+                                return output
                             }
 
                         }
@@ -335,6 +452,17 @@ class students_services {
                         return delete_student
                     }
 
+                } else if (gender === 3 && delete_student) {
+                    let others = fetch_batch_data.others - 1
+                    let batch_total = fetch_batch_data.total_student - 1
+                    let department_others = fetch_department_data.total_others - 1
+                    let department_total = fetch_department_data.total_students - 1
+                    let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "total_student": batch_total, "others": others })
+                    let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_students": department_total, "total_others": department_others })
+                    if (update_batch_students && update_department_students) {
+                        return delete_student
+                    }
+
                 }
             }
             catch (err) {
@@ -395,27 +523,29 @@ class students_services {
     }
     async bulk_delete_students_listing(payload, params) {
         let fetch_batch_data = await batch_model.findOne({ _id: params.id })
-
         let fetch_department_data = await department_model.findOne({ _id: fetch_batch_data.department_id })
-
         try {
             let schema_build = new Schema(student_schema)
             let model = mongoose.model(`${fetch_batch_data.user_id}_students`, schema_build)
             let student_fetch_male = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 1 })
             let student_fetch_female = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 2 })
+            let student_fetch_others = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 3 })
             let delete_student = await model.deleteMany({ "roll_no": payload.ids })
             let total = student_fetch_male.length + student_fetch_female.length
             let male = fetch_batch_data.male - student_fetch_male.length
             let female = fetch_batch_data.female - student_fetch_female.length
+            let others = fetch_batch_data.others - student_fetch_others.length
             let batch_total = fetch_batch_data.total_student - total
 
             let department_male = fetch_department_data.total_male - student_fetch_male.length
             let department_female = fetch_department_data.total_female - student_fetch_female.length
+            let department_others = fetch_department_data.total_others - student_fetch_others.length
+
             let department_total = fetch_department_data.total_students - total
 
 
-            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "total_student": batch_total, "female": female })
-            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female, "total_students": department_total })
+            let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "total_student": batch_total, "female": female, "others": others })
+            let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female, "total_others": department_others, "total_students": department_total })
             if (update_batch_students && update_department_students) {
                 return delete_student
             }
@@ -424,25 +554,32 @@ class students_services {
         }
         catch (err) {
             if (err.name === 'OverwriteModelError') {
-                let model = mongoose.model(`${fetch_batch_data.user_id}_students`)
                 let student_fetch_male = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 1 })
                 let student_fetch_female = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 2 })
-                let delete_student = await model.deleteMany({ roll_no: payload.ids })
+                let student_fetch_others = await model.find({ "roll_no": { "$in": payload.ids }, "gender": 3 })
+
+                let delete_student = await model.deleteMany({ "roll_no": payload.ids })
                 let total = student_fetch_male.length + student_fetch_female.length
                 let male = fetch_batch_data.male - student_fetch_male.length
                 let female = fetch_batch_data.female - student_fetch_female.length
+                let others = fetch_batch_data.others - student_fetch_others.length
                 let batch_total = fetch_batch_data.total_student - total
 
                 let department_male = fetch_department_data.total_male - student_fetch_male.length
                 let department_female = fetch_department_data.total_female - student_fetch_female.length
+                let department_others = fetch_department_data.total_others - student_fetch_others.length
+
                 let department_total = fetch_department_data.total_students - total
 
 
-                let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "total_student": batch_total, "female": female })
-                let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female, "total_students": department_total })
+                let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "male": male, "total_student": batch_total, "female": female, "others": others })
+                let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_male": department_male, "total_female": department_female, "total_others": department_others, "total_students": department_total })
                 if (update_batch_students && update_department_students) {
                     return delete_student
                 }
+
+            } else {
+                return err
             }
         }
 
@@ -626,8 +763,13 @@ class students_services {
                         obj["email"] = jsonObj[i].email
                         if (jsonObj[i].gender.toLowerCase() === "male") {
                             obj["gender"] = 1
+                            obj["front_end_gender"] = "male"
                         } else if (jsonObj[i].gender.toLowerCase() === "female") {
                             obj["gender"] = 2
+                            obj["front_end_gender"] = "female"
+                        } else if (jsonObj[i].gender.toLowerCase() === "others") {
+                            obj["gender"] = 3
+                            obj["front_end_gender"] = "others"
                         }
                         obj["roll_no"] = jsonObj[i].roll_no
                         obj["controller"] = jsonObj[i].controller.toLowerCase()
@@ -670,6 +812,17 @@ class students_services {
                                     if (student_count_update_department && student_count_update_batch) {
                                         count += 1
                                     }
+                                } else if (obj.gender === 3 && student_listing) {
+                                    let others_department = student_data_department[0].total_others + 1
+                                    let total_count = student_data_department[0].total_students + 1
+
+                                    let others = students_data[0].others + 1
+                                    let total = students_data[0].total_student + 1
+                                    let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_others: others_department, total_students: total_count })
+                                    let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: params.id }, { others: others, total_student: total })
+                                    if (student_count_update_department && student_count_update_batch) {
+                                        count += 1
+                                    }
                                 }
 
 
@@ -698,6 +851,17 @@ class students_services {
                                             let total = students_data[0].total_student + 1
                                             let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_female: female_department, total_students: total_count })
                                             let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: params.id }, { female: female, total_student: total })
+                                            if (student_count_update_department && student_count_update_batch) {
+                                                count += 1
+                                            }
+                                        } else if (obj.gender === 3 && student_listing) {
+                                            let others_department = student_data_department[0].total_others + 1
+                                            let total_count = student_data_department[0].total_students + 1
+
+                                            let others = students_data[0].others + 1
+                                            let total = students_data[0].total_student + 1
+                                            let student_count_update_department = await department_model.findOneAndUpdate({ _id: students_data[0].department_id }, { total_others: others_department, total_students: total_count })
+                                            let student_count_update_batch = await batch_model.findOneAndUpdate({ _id: params.id }, { others: others, total_student: total })
                                             if (student_count_update_department && student_count_update_batch) {
                                                 count += 1
                                             }
@@ -746,6 +910,17 @@ class students_services {
                                         delete_count += 1
                                     }
 
+                                } else if (obj.gender === 3 && delete_student && delete_student.deletedCount === 1) {
+                                    let others = fetch_batch_data.others - 1
+                                    let batch_total = fetch_batch_data.total_student - 1
+                                    let department_others = fetch_department_data.total_others - 1
+                                    let department_total = fetch_department_data.total_students - 1
+                                    let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "total_student": batch_total, "others": others })
+                                    let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_students": department_total, "total_others": department_others })
+                                    if (update_batch_students && update_department_students) {
+                                        delete_count += 1
+                                    }
+
                                 } else if (delete_student.deletedCount === 0) {
                                     delete_skip_arr.push(jsonObj[i].roll_no)
                                 }
@@ -775,6 +950,17 @@ class students_services {
                                         let department_total = fetch_department_data.total_students - 1
                                         let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "total_student": batch_total, "female": female })
                                         let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_students": department_total, "total_female": department_female })
+                                        if (update_batch_students && update_department_students) {
+                                            delete_count += 1
+                                        }
+
+                                    } else if (obj.gender === 3 && delete_student && delete_student.deletedCount === 1) {
+                                        let others = fetch_batch_data.others - 1
+                                        let batch_total = fetch_batch_data.total_student - 1
+                                        let department_others = fetch_department_data.total_others - 1
+                                        let department_total = fetch_department_data.total_students - 1
+                                        let update_batch_students = await batch_model.findOneAndUpdate({ _id: params.id }, { "total_student": batch_total, "others": others })
+                                        let update_department_students = await department_model.findOneAndUpdate({ _id: fetch_batch_data.department_id }, { "total_students": department_total, "total_others": department_others })
                                         if (update_batch_students && update_department_students) {
                                             delete_count += 1
                                         }
@@ -824,14 +1010,6 @@ class students_services {
             let fetch_placement = await placement_model.findOne({ placement_id: query.placement_id })
             let key_arr = Object.keys(fetch_placement.percentage)
             let value_arr = Object.values(fetch_placement.percentage)
-
-            let obj = {};
-            let ten_obj = {};
-            let twelve_obj = {};
-            let ug_obj = {};
-            let pg_obj = {};
-            let diploma_obj = {};
-
             let ten = false;
             let twelve = false;
             let ug = false;
@@ -841,23 +1019,18 @@ class students_services {
 
                 if (value_arr[i] != null) {
                     if (key_arr[i] === "ten") {
-                        ten_obj[`percentage.${key_arr[i]}`] = { "$gte": value_arr[i] }
                         ten = true
                     }
                     else if (key_arr[i] === "twelve") {
-                        twelve_obj[`percentage.${key_arr[i]}`] = { "$gte": value_arr[i] }
                         twelve = true
                     }
                     else if (key_arr[i] === "ug") {
-                        ug_obj[`percentage.${key_arr[i]}`] = { "$gte": value_arr[i] }
                         ug = true
                     }
                     else if (key_arr[i] === "pg") {
-                        pg_obj[`percentage.${key_arr[i]}`] = { "$gte": value_arr[i] }
                         pg = true
                     }
                     else if (key_arr[i] === "diploma") {
-                        diploma_obj[`percentage.${key_arr[i]}`] = { "$gte": value_arr[i] }
                         diploma = true
                     }
                 }

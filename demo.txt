@@ -18,7 +18,7 @@
 1)create = batch_id (payload)
 2)fetch = batch_id(query) + search api included with student name and rollno
 3)sort = batch_id,order(asc / desc),field (any key in the collection)(query)
-4)edit = batch_id (params)
+4)edit = batch_id (params) / student_id (params)
 5)single delete = batch_id , student_id (params)
 6)bulk delete = batch id (params), student rollno(array"body")
 7)bulk transfer = batch id(params),student rollno(array"body")   (hint:(payload)field_value =0 ,1,2 0=normal 1=intern, 2=placement)

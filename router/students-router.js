@@ -43,7 +43,7 @@ router.get('/educare/search-student', validate(joi_validation.students_search_qu
 router.get('/educare/sort-student', validate(joi_validation.students_sort),
     sort_students.sort_students_listing)
 
-router.put('/educare/edit-student/:id', validate(joi_validation.students_edit), validate(joi_validation.students_edit_params),
+router.put('/educare/edit-student/:id/:student_id', validate(joi_validation.students_edit), validate(joi_validation.students_edit_params),
     edit_students.edit_students_listing)
 
 router.delete('/educare/delete-student/:id/:student_id', validate(joi_validation.students_delete_params),

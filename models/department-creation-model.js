@@ -27,6 +27,10 @@ const department_schema = new Schema({
         type:Number,
         default:0
     },
+    total_others:{
+        type:Number,
+        default:0
+    },
     focus_student_placement:{
         type:Number,
         default:0

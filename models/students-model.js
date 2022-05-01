@@ -13,7 +13,11 @@ let student_schema = {
     },
     gender: {
         type: Number,
-        default: 0,
+        required:true
+    },
+    front_end_gender:{
+        type: String,
+        required: true,
     },
     roll_no: {
         type: String,

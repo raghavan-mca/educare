@@ -8,6 +8,7 @@ module.exports = {
             age: joi.number().required(),
             dob: joi.string().required(),
             gender: joi.number().required(),
+            front_end_gender: joi.string().required(),
             roll_no: joi.string().required(),
             percentage: {
                 ten: joi.number().min(1).max(101).required(),
@@ -44,6 +45,7 @@ module.exports = {
             age: joi.number().required(),
             dob: joi.string().required(),
             gender: joi.number().required(),
+            front_end_gender: joi.string().required(),
             roll_no: joi.string().required(),
             percentage: {
                 ten: joi.number().min(1).max(101).required(),
@@ -60,11 +62,12 @@ module.exports = {
     students_edit_params: {
         params: joi.object({
             id: joi.string().required(),
+            student_id: joi.string().required(),
         })
     },
     students_delete_params: {
         params: joi.object({
-            student_id:joi.string().required(),
+            student_id: joi.string().required(),
             id: joi.string().required(),
         })
     },
@@ -78,7 +81,7 @@ module.exports = {
             ids: joi.array().required(),
         })
     },
-    students_transfer_params:{
+    students_transfer_params: {
         params: joi.object({
             id: joi.string().required(),
         })
@@ -90,15 +93,15 @@ module.exports = {
             field_value: joi.number().required(),
         })
     },
-    students_upload_params:{
+    students_upload_params: {
         params: joi.object({
             id: joi.string().required(),
         })
     },
-    students_search_query:{
+    students_search_query: {
         query: joi.object({
             id: joi.string().required(),
-            placement_id : joi.string().required()
+            placement_id: joi.string().required()
         })
     },
 }
