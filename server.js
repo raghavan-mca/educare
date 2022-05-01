@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const file_uploade = require('express-fileupload')
 
 const mongoose = require('mongoose')
 
@@ -16,6 +17,10 @@ const department = require('./router/department-router')
 const batch = require('./router/batch-router')
 const student = require('./router/students-router')
 
+app.use(file_uploade({
+    useTempFiles : true,
+    createParentPath:true
+}));
 app.use(company_placement)
 app.use(company_listing)
 app.use(department)

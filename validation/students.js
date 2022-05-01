@@ -90,4 +90,15 @@ module.exports = {
             field_value: joi.number().required(),
         })
     },
+    students_upload_params:{
+        params: joi.object({
+            id: joi.string().required(),
+        })
+    },
+    students_search_query:{
+        query: joi.object({
+            id: joi.string().required(),
+            placement_id : joi.string().required()
+        })
+    },
 }

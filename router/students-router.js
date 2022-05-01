@@ -8,7 +8,9 @@ const sort_students_listing = require('../controller/students/student-sort');
 const edit_students_listing = require('../controller/students/student-edit');
 const delete_students_listing = require('../controller/students/student-delete');
 const bulk_delete_students_listing = require('../controller/students/student-bulk-delete');
-const students_transfer = require('../controller/students/student-transfer')
+const students_transfer = require('../controller/students/student-transfer');
+const students_file_uplode = require('../controller/students/student-file-uplode');
+const students_search_with_placement_id = require('../controller/students/student-search-with-company-id')
 
 
 
@@ -26,12 +28,17 @@ const edit_students = new edit_students_listing();
 const delete_students = new delete_students_listing();
 const bulk_delete_students = new bulk_delete_students_listing();
 const student_transfer = new students_transfer();
+const file_uploade = new students_file_uplode();
+const search_with_placement_id = new students_search_with_placement_id();
 
 router.post('/educare/new-student', validate(joi_validation.students_create),
     create_students.create_students_listing)
 
 router.get('/educare/get-student', validate(joi_validation.students_fetch),
     fetch_students.fetch_students_listing)
+
+router.get('/educare/search-student', validate(joi_validation.students_search_query),
+    search_with_placement_id.search_with_placement_id)
 
 router.get('/educare/sort-student', validate(joi_validation.students_sort),
     sort_students.sort_students_listing)
@@ -47,6 +54,9 @@ router.delete('/educare/multi-delete-student/:id', validate(joi_validation.stude
 
 router.put('/educare/transfer-student/:id', validate(joi_validation.students_transfer_body), validate(joi_validation.students_transfer_params),
     student_transfer.student_transfer)
+
+router.post('/educare/upload-student/:id', validate(joi_validation.students_upload_params),
+    file_uploade.file_uplode)
 
 
 
