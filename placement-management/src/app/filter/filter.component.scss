@@ -196,12 +196,16 @@
   max-width: 210px;
 }
 
-
+.pl-filt-ft::after{
+  content: "";
+  display: block;
+  clear: both;
+}
 
 
 .filter-expmin{
   height: auto;
-  z-index: 1;
+  z-index: 1000;
   visibility: visible;
   margin-top: 35px;
     transition: margin-top 0.08s ease-in-out;

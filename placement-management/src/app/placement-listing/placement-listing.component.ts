@@ -34,6 +34,7 @@ export class PlacementListingComponent implements OnInit {
   sel_placement_id: string;
 
   comp_search_txt: string = "";
+  placement_search:string = "";
 
   msel_placement_ids: string[] = [];
   msel_placement_id: string = "";
@@ -94,6 +95,7 @@ export class PlacementListingComponent implements OnInit {
 
   date_transformed: string = '';
 
+
   constructor(
     private filterService: FilterServ,
     public placementlistObj: PlacementListObj,
@@ -132,6 +134,10 @@ export class PlacementListingComponent implements OnInit {
 
     this.filterService.rmselAllFooter().subscribe((msel_all_footer_call) => {
       this.msel_all_footer = msel_all_footer_call;
+    });
+
+    this.filterService.rplacementSearchGet().subscribe((placement_search) => {
+      this.placement_search = placement_search;
     });
 
     this.placementlistObj.getPlacements();
@@ -187,36 +193,36 @@ export class PlacementListingComponent implements OnInit {
 
   }
 
-  customFormReset(createPlacementForm: NgForm){
+  // customFormReset(createPlacementForm: NgForm){
 
-    this.placement_list = [
-    {
+  //   this.placement_list = [
+  //   {
 
-    company_name: "",
-      company_email: "",
-      company_website: "",
-      job_role: "",
-      placement_date: "",
-      salary: {
-        min_salary: null,
-        max_salary: null
-      },
-      location: "",
-      open_to_all: 0,
-      registration_date: "",
-      registration_link: "",
-      percentage: {
-        ten: null,
-        twelve: null,
-        ug: null,
-        pg:null,
-        diploma: null
-      }
-    }
+  //   company_name: "",
+  //     company_email: "",
+  //     company_website: "",
+  //     job_role: "",
+  //     placement_date: "",
+  //     salary: {
+  //       min_salary: null,
+  //       max_salary: null
+  //     },
+  //     location: "",
+  //     open_to_all: 0,
+  //     registration_date: "",
+  //     registration_link: "",
+  //     percentage: {
+  //       ten: null,
+  //       twelve: null,
+  //       ug: null,
+  //       pg:null,
+  //       diploma: null
+  //     }
+  //   }
 
-    ]
+  //   ]
 
-  }
+  // }
 
   cname_sel_sh() {
     if (this.cname_sel_oh == true) {
@@ -288,6 +294,7 @@ export class PlacementListingComponent implements OnInit {
   }
 
   shMselFooter() {
+    
 
     if (this.msel_all_footer == false) {
       this.msel_all_footer = true;
@@ -304,7 +311,7 @@ export class PlacementListingComponent implements OnInit {
   updatePlacementDate(dateObject: any) {
     if(dateObject !== ""){
     this.place_date = dateObject;
-
+    console.log(dateObject);
     }
 
   }
@@ -334,9 +341,8 @@ export class PlacementListingComponent implements OnInit {
       createPlacementForm.value.pg,
       createPlacementForm.value.diploma
     );
-    this.customFormReset(createPlacementForm);
     console.log(this.placement_list);
-    
+    createPlacementForm.resetForm();
     this.closePop();
   }
 
@@ -354,7 +360,6 @@ export class PlacementListingComponent implements OnInit {
 
     });
     this.isAddRecordBtn = false;
-
     console.log(this.placement_list);
   };
 
@@ -391,9 +396,7 @@ export class PlacementListingComponent implements OnInit {
       selected_placement);
 
     this.closePop();
-    form.reset();
-    this.customFormReset(form);
-
+        form.resetForm();
   };
 
   deleteExistPlacement(event: Event) {
@@ -469,6 +472,7 @@ export class PlacementListingComponent implements OnInit {
   }
 
   multiDeleteExistPlacement(event: Event) {
+
 
     this.msel_all_footer = false;
 
@@ -550,3 +554,4 @@ export class PlacementListingComponent implements OnInit {
 
 
 }
+

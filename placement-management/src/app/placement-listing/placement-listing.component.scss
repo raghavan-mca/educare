@@ -1,8 +1,9 @@
 .pl-list-container {
-  padding: 20px;
+  padding: 20px 15px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: 20px 15px;
+  grid-template-rows: min-content;
+  grid-gap: 20px 20px;
   transition: all 0.01s ease-in-out;
   position: absolute;
   top: 45px;
@@ -27,28 +28,6 @@
   padding-bottom: 7px;
 }
 
-.pl-listbox-bg {
-  position: absolute;
-  top: 300px;
-  left: 15px;
-  right: 0;
-  height: 30px;
-}
-
-
-.pl-listbox-bg::before {
-  content: "";
-  display: block;
-  /* position: absolute; */
-  right: 15px;
-  width: calc(100% + 10px);
-  background-color: var(--prim-65);
-  z-index: 0;
-  /* bottom: -10px; */
-  border-radius: 15px;
-  width: 290px;
-  height: 100%;
-}
 
 .pl-listbox-parent {
   display: inline-block;
@@ -61,7 +40,7 @@
 
 .pl-list-title {
   font-size: var(--fs-20);
-  color: var(--prim);
+  color: var(--gry-90);
   font-weight: 600;
   padding: 15px;
   padding-left: 12px;
@@ -71,6 +50,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   position: relative;
+  font-family: "poppins-bold", "Verdana", "Helvatica", sans-serif;
 }
 
 .pl-list-title::before {
@@ -109,7 +89,7 @@
   height: 100%;
   fill: var(--prim);
   position: relative;
-  top: 4px;
+  top: 2px;
 }
 
 .pl-list-icosvg path {
@@ -128,12 +108,12 @@
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: var(--gry-50);
+  color: var(--gry-30);
 }
 
 .pl-blue-lbl {
-  background-color: var(--prim-5);
-  color: var(--prim);
+  background-color: var(--gry-10);
+  color: var(--gry-60);
   font-size: var(--fs-10);
   display: inline-block;
   vertical-align: middle;
@@ -177,3 +157,16 @@
   z-index: 0;
 }
 
+.reg-lbl {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.reg-lnk {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 75%;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}

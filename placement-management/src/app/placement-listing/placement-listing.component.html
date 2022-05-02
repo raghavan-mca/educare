@@ -1,6 +1,10 @@
 <app-header></app-header>
-<div class="pl-list-container" [class.filter-expmin]="filter_expmin" [class.filter-res-expmin]="filter_res_expmin" [style.height]="filter_header">
-  <div class="pl-listbox-parent" *ngFor="let pl_list of placement_list">
+<div class="pl-list-container" [class.filter-res-expmin]="filter_res_expmin" [style.height]="filter_header">
+   <ng-container *ngFor="let pl_list of placement_list | placementSearch: placement_search">
+   <div class="pl-listbox-parent" 
+  >
+ 
+ 
     <div class="pl-list-box">
       <div class="pl-list-title">
         {{ pl_list.company_name }}
@@ -137,8 +141,8 @@
         </div>
         <div>
           <div class="pl-list-lbl">
-            <span>Register - </span>
-            <a class="clnk" target="_blank" href="#">{{ pl_list.registration_link }}</a>
+            <span class="reg-lbl">Register - </span>
+            <a class="clnk reg-lnk" target="_blank" href="#">{{ pl_list.registration_link }}</a>
           </div>
           <div [ngSwitch]="pl_list.registration_status">
               <div class="i-green" *ngSwitchCase="0">
@@ -203,7 +207,7 @@
     </div>
     <div class="pl-listbox-bg"></div>
     <div class="pl-list-action">
-      <div class="pl-act-icon" [id]="pl_list.placement_id" (click)="editExistPlacement($event);" #id>
+      <div class="pl-act-icon dn" [id]="pl_list.placement_id" (click)="editExistPlacement($event);" #id>
         <!-- <div class="pl-act-icon"
       ngModel
       [(ngModel)]="pl_list.placement_id"
@@ -219,8 +223,8 @@
           </g>
         </svg>
       </div>
-      <div class="pl-act-icon" [id]="pl_list.placement_id" (click)="deleteExistPlacement($event);">
-        <svg width="512" height="512" x="0" y="0" viewBox="0 0 32 32" style="enable-background:new 0 0 512 512" xml:space="preserve" class="pl-act-icoimg">
+      <div class="pl-act-icon dn" [id]="pl_list.placement_id" (click)="deleteExistPlacement($event);">
+        <svg width="512" height="512" x="0" y="0" viewBox="0 0 32 32" style="enable-background:new 0 0 512 512" xml:space="preserve" class="pl-act-icoimg pl-act-delico">
           <g>
             <path xmlns="http://www.w3.org/2000/svg" id="XMLID_246_" d="m27 6h-6v-1c0-1.654-1.346-3-3-3h-4c-1.654 0-3 1.346-3 3v1h-6c-1.103 0-2 .897-2 2v1c0 .552.448 1 1 1h24c.552 0 1-.448 1-1v-1c0-1.103-.897-2-2-2zm-14-1c0-.551.449-1 1-1h4c.551 0 1 .449 1 1v1h-6z" fill="#000000" data-original="#000000" class=""></path>
             <path xmlns="http://www.w3.org/2000/svg" id="XMLID_249_" d="m6 12v15c0 1.654 1.346 3 3 3h14c1.654 0 3-1.346 3-3v-15zm13.707 10.293c.391.391.391 1.023 0 1.414s-1.023.391-1.414 0l-2.293-2.293-2.293 2.293c-.391.391-1.023.391-1.414 0s-.391-1.023 0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0l2.293 2.293 2.293-2.293c.391-.391 1.023-.391 1.414 0s.391 1.023 0 1.414l-2.293 2.293z" fill="#000000" data-original="#000000" class=""></path>
@@ -254,7 +258,11 @@
 
     </div>
   </div>
+  </ng-container>
+ 
+
 </div>
+
 <div class="cpop-bg scale-out" [class.scale-in]="sh_popup">
   <div class="cpop-box">
     <div class="cpop-content">

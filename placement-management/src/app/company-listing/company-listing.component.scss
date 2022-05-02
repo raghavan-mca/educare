@@ -1,9 +1,10 @@
 .cl-list-cont {
 	padding-top: 15px;
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-	gap: 30px 15px;
-	padding: 35px;
+	grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+	grid-template-rows: min-content;
+	grid-gap: 15px;
+	padding: 30px 15px;
 	overflow: auto;
     position: absolute;
     top: 45px;
@@ -13,7 +14,7 @@
 }
 
 .cl-list-box {
-	width: 320px;
+	width: 295px;
 	height: 180px;
 	background-color: var(--white);
 	border-radius: 12px;
@@ -22,27 +23,31 @@
 	vertical-align: top;
 	position: relative;
 	z-index: 1;
+	text-align: center;
 }
 
 .cl-list-btxt {
 	font-weight: 600;
 	font-size: var(--fs-20);
-	color: var(--gry-60);
-	padding: 10px 5px;
-	padding-bottom: 5px;
+	color: var(--gry-90);
+	padding: 15px 7px;
+	padding-bottom: 7px;
 	text-align: center;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+  	font-family: "poppins-bold", "Verdana", "Helvatica",  sans-serif;
 }
 
 .cl-subsec{
-	background-color: var(--gry-10);
 	width: 100%;
-	height: 100px;
-	margin-top: 10px;
+	height: auto;
 }
 
 .cl-action-iconbox {
-	width: 49%;
-	height: 100px;
+	width: 100px;
+	height: 70px;
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
@@ -56,20 +61,22 @@
 	display: block;
 	width: 1px;
 	height: 50px;
-	background-color: var(--gry-12);
+	background-color: var(--gry-5);
 	position: absolute;
 	right: 0px;
 	top: 15px;
 }
 
 .cl-action-icon {
-	width: 50px;
-	height: 50px;
+	width: 35px;
+	height: 35px;
 	font-size: var(--fs-11);
 	margin-top: 6px;
 	padding: 5px;
 }
-
+.cl-action-icon path{
+	fill: var(--gry-50);
+}
 .cl-action-iconbox:hover .cl-action-icon path{
 	fill: var(--prim-65);
 }
@@ -77,8 +84,7 @@
 .cl-bl-txt {
 	color: var(--prim-65);
 	font-size: var(--fs-12);
-	font-weight: 600;
-	padding: 5px;
+	padding:0px 5px;
 }
 
 .cstar-box {
@@ -96,4 +102,31 @@
 
 .cstar path{
 	fill: var(--gry-20);
+}
+
+.cstar-rate {
+	background-color: var(--yell-80);
+	color: var(--white);
+	text-align: center;
+	font-size: var(--fs-16);
+	border-radius: 50px;
+	padding: 7px;
+	display: inline-block;
+	margin: 7px 0px;
+}
+
+.cl-list-parent{
+	width: 320px;
+	height: 210px;
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+}
+
+.cl-list-parent .pl-listbox-bg{
+	top: 160px;
+}
+
+.cl-list-parent .pl-listbox-bg::before{
+	width: 265px;
 }

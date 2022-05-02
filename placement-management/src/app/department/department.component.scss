@@ -1,0 +1,52 @@
+.dep-list-title{
+	width: 100%;
+	background-color: var(--prim-5);
+	padding: 5px 0px;
+	padding-bottom: 7px;
+	margin-bottom: 5px;
+	text-align: center;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	position: relative;
+	border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.dep-list-title:after{
+	content: "";
+	display: block;
+	width: 20%;
+	height: 4px;
+	border-radius: 40px;
+	background-color: var(--prim-65);
+	position: absolute;
+	left: 50%;
+	bottom: -2px;
+	transform: translate(-50%, -50%);
+}
+
+.dep-title-txt{
+	font-weight: 600;
+	padding: 0px 7px;
+	color: var(--gry-90);
+	font-size: var(--fs-18);
+	max-width: 100%;
+	/*text-overflow: ellipsis;*/
+	white-space: nowrap;
+	overflow: hidden;
+	-webkit-mask-image:linear-gradient(90deg, black 90%, transparent 97%);
+  	font-family: "poppins-bold", "Verdana", "Helvatica", sans-serif;
+}
+.dep-sub-lbl{
+	font-size: var(--fs-12);
+	padding: 0px 2px;
+}
+
+.dep-listbox-parent {
+  display: inline-block;
+  vertical-align: top;
+  width: 320px;
+  height: 320px;
+  position: relative;
+  margin: 7px 0px;
+}

@@ -2,7 +2,17 @@ import { Component, OnInit } from '@angular/core';
 
 import { FilterServ } from '../services/filter.service';
 
+import { PlacementListObj } from '../services/placements-list.service';
+
+import { PlacementList } from '../shared/listing.model';
+
+import { Subscription } from 'rxjs';
+
 import { Options } from "@angular-slider/ngx-slider";
+
+import { DateFormatDirective } from '../format-datepicker.directive';
+
+import {NgForm} from "@angular/forms";
 
 
 @Component({
@@ -12,6 +22,30 @@ import { Options } from "@angular-slider/ngx-slider";
 })
 
 export class FilterComponent implements OnInit {
+
+  placement_list: PlacementList[];
+  placementlistObj_sub: Subscription;
+
+  // placement_filter_data: PlacementFilterData[];
+
+  placement_filter_data: PlacementFilterData = {
+    placement_date: "",
+    min_salary: 0,
+    max_salary: 0,
+    ten:0,
+    twelve: 0,
+    ug: 0,
+    pg: 0,
+    diploma: 0,
+    open_to_all: 0
+    }
+  
+  placement_filter_param: string = "";
+
+  outputDateFormat = 'yyyy-MM-DD';
+
+  placement_date: string = "";
+  registration_date: string = "";
 
   sal_value = 150000;
   sal_highValue = 900000;
@@ -95,18 +129,22 @@ export class FilterComponent implements OnInit {
     i: number = 1;
     a: any;
 
-  placement_date: string = '';
-
   slider_val_1: string = "1k";
   slider_val_2: string = "6k";
 
-  constructor(private filterService: FilterServ) {
+  open_to_all: any = 0;
+
+  constructor(private filterService: FilterServ,
+              private placementlistObj: PlacementListObj
+    ) {
 
 
   }
 
 
   ngOnInit() {
+
+
 
   this.selDateNo();
 
@@ -130,14 +168,23 @@ export class FilterComponent implements OnInit {
     } );
     
 
+  }
+
+   updatePlacementDate(dateObject: any) {
+    if(dateObject !== ""){
+    this.placement_date = dateObject;
+
+    }
 
   }
 
-    placementDate(placement_date_val: string){
-      this.placement_date = placement_date_val;
-    console.log(this.placement_date);
-      
+   updateRegisterDate(dateObject: any) {
+    if(dateObject !== ""){
+    this.registration_date = dateObject;
+
     }
+
+  }
 
   filterClose(){
      this.filterService.filterExpMin(this.filter_expmin);
@@ -335,10 +382,14 @@ export class FilterComponent implements OnInit {
   percentDisable(){
     if(this.percent_disable == false){
       this.percent_disable = true;
+      this.open_to_all = 1;
+
     }
     else {
       this.percent_disable = false;
+      this.open_to_all = 0;
     }
+
   }
 
   // slider1 = document.querySelector("#slider1") !as HTMLInputElement;
@@ -383,11 +434,52 @@ export class FilterComponent implements OnInit {
   //  this.slideOne();
   // this.slideTwo();
 
+  filterPlacement(filer_placement: NgForm) {
+    this.placement_filter_param = "";
 
+    this.placement_filter_data = {
+    placement_date: this.placement_date,
+    min_salary: this.sal_value,
+    max_salary: this.sal_highValue,
+    ten: this.tenth_mival,
+    twelve: this.twelth_mival,
+    ug: this.ug_mival,
+    pg: this.pg_mival,
+    diploma: this.dip_mival,
+    open_to_all: this.open_to_all
+      }
+
+    // this.placement_filter_data.placement_date = this.placement_date;
+    //   this.placement_filter_data.min_salary = this.sal_value;
+    //   this.placement_filter_data.max_salary = this.sal_highValue;
+
+      let str1 = "";
+
+    Object.entries(this.placement_filter_data).forEach(([key, value]) => {
+    let str2 = key + "=" + value + "&";
+
+    this.placement_filter_param += str1.concat(str2.toString());
+
+    });
+    console.log(this.placement_filter_param.slice(0, -1));
+
+    this.placementlistObj.filterPlacementData(this.placement_filter_param);
+
+  }
 
 }
 
-
+interface PlacementFilterData  {
+    placement_date?: string;
+    min_salary: any;
+    max_salary: any;
+    ten: any;
+    twelve: any;
+    ug: any;
+    pg: any;
+    diploma: any;
+    open_to_all: any;
+}
 
 class SelDate{
 

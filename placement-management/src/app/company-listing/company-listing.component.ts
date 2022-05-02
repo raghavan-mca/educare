@@ -24,7 +24,8 @@ export class CompanyListingComponent implements OnInit {
   sh_popup: boolean = false;
   sh_confirm_pop: boolean = false;
 
-  
+  placement_search: string = "";
+
   msel_placement_ids: string[] = [];
   msel_placement_id: string = "";
   msel_id_nos: number = 0;
@@ -73,6 +74,10 @@ export class CompanyListingComponent implements OnInit {
       .subscribe((company_lists: CompanyLists[]) => {
         this.company_lists = company_lists;
     })
+
+      this.filterService.rplacementSearchGet().subscribe((placement_search) => {
+      this.placement_search = placement_search;
+    });
 
       this.company_lists_selected = {
         company_name: "",

@@ -17,14 +17,11 @@ export class DateFormatDirective {
 			const dateFormattedEmpty = "";
 			this.dateChangeWithFormat.emit(dateFormattedEmpty);
 
-			console.log("1" +event.value);
 		}
 		else {
-			console.log("2" +event.value);
 
 		const dateFormatted = event.value.format(this.inputFormat);
 		this.dateChangeWithFormat.emit(dateFormatted);
-			console.log("3"+dateFormatted);
 
 		}
 

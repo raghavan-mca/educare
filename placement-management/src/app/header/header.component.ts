@@ -10,6 +10,7 @@ import { FilterServ } from '../services/filter.service';
 })
 export class HeaderComponent implements OnInit {
 
+  placement_search: string = "";
 
   filter_expmin: boolean = false;
   filter_res_expmin: boolean = true;
@@ -33,6 +34,10 @@ export class HeaderComponent implements OnInit {
       this.msel_all_footer = msel_all_footer_call;
     });
 
+  }
+
+  sendPlacementSearch() {
+    this.filterService.placementSearchGet(this.placement_search);
   }
 
   filterExpMin(filter_expmin: boolean, filter_res_expmin: boolean) {

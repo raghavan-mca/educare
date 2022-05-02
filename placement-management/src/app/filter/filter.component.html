@@ -60,7 +60,12 @@
   </div>
 </div>
  -->
-<div #filterheader class="pl-filter-head " [class.filter-expmin]="filter_expmin" [class.filter-res-expmin]="filter_res_expmin">
+<div #filterheader class="pl-filter-head " [class.filter-expmin]="filter_expmin" [class.filter-res-expmin]="filter_res_expmin"
+
+>
+<form #filter_placement="ngForm"
+ (submit)="filterPlacement(filter_placement);">
+  
   <div class="pl-parent-sec">
     <div class="pl-filt-hfilter">
       <div class="pl-filt-headsec">
@@ -85,7 +90,12 @@
               <div class="cfld-icobox">
                 <mat-datepicker-toggle class="cfld-icobox" matPrefix [for]="placementdate"></mat-datepicker-toggle>
               </div>
-              <input (dateInput)="placementDate($event.value)" matInput [matDatepicker]="placementdate" class="cinp" type="text" name="" placeholder="Placement Date" />
+              <input matInput [matDatepicker]="placementdate" class="cinp" type="text" 
+              name="filt_placement_date" 
+              placeholder="Placement Date" 
+              [(ngModel)]="placement_date" 
+              [setOutputDateFormat]="outputDateFormat" 
+              (dateChangeWithFormat)="updatePlacementDate($event)" />
               <mat-datepicker #placementdate></mat-datepicker>
             </div>
           </div>
@@ -190,7 +200,7 @@
               <div class="cfld-icobox">
                 <mat-datepicker-toggle class="cfld-icobox" matPrefix [for]="registerdate"></mat-datepicker-toggle>
               </div>
-              <input matInput [matDatepicker]="registerdate" class="cinp" type="text" name="" placeholder="Registration Date">
+              <input matInput [matDatepicker]="registerdate" class="cinp" type="text" name="filt_register_date" placeholder="Registration Date" [(ngModel)]="registration_date" [setOutputDateFormat]="outputDateFormat" (dateChangeWithFormat)="updateRegisterDate($event)">
               <mat-datepicker #registerdate></mat-datepicker>
             </div>
           </div>
@@ -230,15 +240,16 @@
         </div>
         <div class="pl-filt-subsec">
           <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="sal_value" [(highValue)]="sal_highValue" [options]="sal_options"></ngx-slider>
+            <ngx-slider 
+            [(value)]="sal_value" 
+            [options]="sal_options"
+            [(highValue)]="sal_highValue"
+            ></ngx-slider>
           </div>
-
         </div>
       </div>
     </div>
-
-     <div class="pl-filt-headsec">
+    <div class="pl-filt-headsec">
       <div class="pl-filt-header">
         <div class="pl-filt-lbl">
           Percentage
@@ -260,61 +271,49 @@
             <div class="pl-filt-subtxt">
               10th
             </div>
-              <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="tenth_mival" [options]="tenth_options"></ngx-slider>
-          </div>
-
-
+            <div class="pl-range-ngxslider">
+              <ngx-slider 
+              [(value)]="tenth_mival" 
+              [options]="tenth_options"
+              ></ngx-slider>
+            </div>
           </div>
           <div class="pl-filt-subsec">
             <div class="pl-filt-subtxt">
               12th
             </div>
-
-           <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="twelth_mival" [options]="twelth_options"></ngx-slider>
-          </div>
-
+            <div class="pl-range-ngxslider">
+              <ngx-slider [(value)]="twelth_mival" [options]="twelth_options"></ngx-slider>
+            </div>
           </div>
           <div class="pl-filt-subsec">
             <div class="pl-filt-subtxt">
               UG
             </div>
-           
-           <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="ug_mival" [options]="ug_options"></ngx-slider>
-          </div>
-
+            <div class="pl-range-ngxslider">
+              <ngx-slider [(value)]="ug_mival" [options]="ug_options"></ngx-slider>
+            </div>
           </div>
           <div class="pl-filt-subsec">
             <div class="pl-filt-subtxt">
               PG
             </div>
-           <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="pg_mival" [options]="pg_options"></ngx-slider>
-          </div>
-
+            <div class="pl-range-ngxslider">
+              <ngx-slider [(value)]="pg_mival" [options]="pg_options"></ngx-slider>
+            </div>
           </div>
           <div class="pl-filt-subsec">
             <div class="pl-filt-subtxt">
               Diploma
             </div>
             <div class="pl-range-ngxslider">
-            
-          <ngx-slider [(value)]="dip_mival" [options]="dip_options"></ngx-slider>
-          </div>
-
+              <ngx-slider [(value)]="dip_mival" [options]="dip_options"></ngx-slider>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
-
-   <!--  <div class="pl-filt-headsec">
+    <!--  <div class="pl-filt-headsec">
       <div class="pl-filt-header">
         <div class="pl-filt-lbl">
           Percentage
@@ -437,7 +436,22 @@
     </div>
      -->
   </div>
-  <div class="pl-filt-res">
+
+  <div class="pl-filt-ft">
+    <div class="cft-rgt">
+      <div class="pl-btn pl-btnred">
+        Cancel
+      </div>
+      <button type="submit" class="pl-btn pl-btnprim" >
+        Apply
+      </button>
+    </div>
+  </div>
+
+</form>
+
+  
+  <div class="pl-filt-res dn">
     <div class="pl-filter-info">
       <div class="pl-info-lbl">
         Salary:
