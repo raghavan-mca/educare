@@ -171,6 +171,14 @@ class students_services {
                         "roll_no": { $regex: query.roll_no }
                     }]
                 }
+                
+            }
+            if(query.focus_student_intern){
+                filter["focus_student_intern"] = query.focus_student_intern
+            }
+            if(query.focus_student_placement){
+                filter["focus_student_placement"] = query.focus_student_placement
+            
             }
             try {
                 let schema_build = new Schema(student_schema)
@@ -210,10 +218,8 @@ class students_services {
     async sort_students_listing(query) {
         try {
             let fetch_batch_data = await batch_model.findOne({ _id: query.batch_id })
-
             let sort = {};
             sort[`${query.field}`] = query.order
-
 
             try {
                 let schema_build = new Schema(student_schema)

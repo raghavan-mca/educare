@@ -51,6 +51,12 @@ class department_services {
                 filter["$or"] = [{
                     "department_name": { $regex: query.department_name }
                 }]
+            }if(query.focus_student_intern){
+                filter["focus_student_intern"] = query.focus_student_intern
+            }
+            if(query.focus_student_placement){
+                filter["focus_student_placement"] = query.focus_student_placement
+            
             }
             const fetch_department = await department_model.find(filter)
             return fetch_department

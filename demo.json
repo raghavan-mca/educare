@@ -56,7 +56,8 @@
     "batch": {
         "user_id": "sdfghjk",
         "batch": "2022",
-        "department_id": "62583ce0534f975d1e19a8be"
+        "department_id": "62583ce0534f975d1e19a8be",
+        "year":"wertyu"
     },
     "mass_transfer": {
         "field": "intern or placement", 

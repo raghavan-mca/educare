@@ -27,8 +27,10 @@ module.exports = {
     students_fetch: {
         query: joi.object({
             batch_id: joi.string().required(),
-            name: joi.string().optional().allow(""),
-            roll_no: joi.string().optional().allow(""),
+            name: joi.string().optional(),
+            roll_no: joi.string().optional(),
+            focus_student_intern:joi.number().optional(),
+            focus_student_placement:joi.number().optional()
 
         })
     },

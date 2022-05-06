@@ -14,7 +14,10 @@ module.exports = {
     },
     department_fetch: {
         query: joi.object({
-            department_name: joi.string().optional().allow(""),
+            department_name: joi.string().optional(),
+            focus_student_intern:joi.number().optional(),
+            focus_student_placement:joi.number().optional()
+
         })
     },
     department_edit:{

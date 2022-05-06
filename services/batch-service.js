@@ -58,6 +58,9 @@ class batch_services {
         try {
             let filter = {}
             filter["department_id"] = query.department_id
+            if(query.focus_student){
+                filter["focus_student"] = query.focus_student
+            }
             let fetch_batch = await batch_model.find(filter)
             return fetch_batch
         } catch (err) {

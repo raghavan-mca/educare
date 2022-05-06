@@ -1,3 +1,4 @@
+const Joi = require('joi')
 const joi = require('joi')
 
 module.exports = {
@@ -11,7 +12,8 @@ module.exports = {
     },
     batch_fetch: {
         query: joi.object({
-            department_id: joi.string().required()
+            department_id: joi.string().required(),
+            focus_student: joi.number().optional()
         })
     },
     batch_edit: {
