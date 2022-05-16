@@ -22,8 +22,9 @@
 5)single delete = batch_id , student_id (params)
 6)bulk delete = batch id (params), student rollno(array"body")
 7)bulk transfer = batch id(params),student rollno(array"body")   (hint:(payload)field_value =0 ,1,2 0=normal 1=intern, 2=placement)
-8)search = campaign_id , batch_id (query)
+8)search = campaign_id , batch_id ,focus_student (query)
 9)upload = batch_id (params),name-tag = file
+10)multi api = dep id,take("one" or "all")
 
 
 

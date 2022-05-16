@@ -58,6 +58,9 @@ class department_services {
                 filter["focus_student_placement"] = query.focus_student_placement
             
             }
+            if(query.id){
+                filter["_id"] = query.id
+            }
             const fetch_department = await department_model.find(filter)
             return fetch_department
         } catch (err) {

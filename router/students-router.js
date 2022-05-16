@@ -11,7 +11,7 @@ const bulk_delete_students_listing = require('../controller/students/student-bul
 const students_transfer = require('../controller/students/student-transfer');
 const students_file_uplode = require('../controller/students/student-file-uplode');
 const students_search_with_placement_id = require('../controller/students/student-search-with-company-id')
-
+const multi_api_fetch = require("../controller/students/multi-api-fetch")
 
 
 
@@ -30,6 +30,7 @@ const bulk_delete_students = new bulk_delete_students_listing();
 const student_transfer = new students_transfer();
 const file_uploade = new students_file_uplode();
 const search_with_placement_id = new students_search_with_placement_id();
+const multi_apis_fetch = new multi_api_fetch()
 
 router.post('/educare/new-student', validate(joi_validation.students_create),
     create_students.create_students_listing)
@@ -57,6 +58,9 @@ router.put('/educare/transfer-student/:id', validate(joi_validation.students_tra
 
 router.post('/educare/upload-student/:id', validate(joi_validation.students_upload_params),
     file_uploade.file_uplode)
+
+router.get('/educare/multi-api', validate(joi_validation.multi_api_query),
+    multi_apis_fetch.multi_api_fetch)
 
 
 

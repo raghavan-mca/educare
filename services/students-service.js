@@ -6,7 +6,9 @@ const student_schema = require("../models/students-model");
 const batch_model = require("../models/batch-model");
 const department_model = require("../models/department-creation-model");
 const placement_model = require("../models/company-placement-model");
+const axios = require("axios")
 const { number } = require('joi');
+const { students_search_query } = require('../validation/students');
 
 class students_services {
     async create_student(payload) {
@@ -171,14 +173,14 @@ class students_services {
                         "roll_no": { $regex: query.roll_no }
                     }]
                 }
-                
+
             }
-            if(query.focus_student_intern){
+            if (query.focus_student_intern) {
                 filter["focus_student_intern"] = query.focus_student_intern
             }
-            if(query.focus_student_placement){
+            if (query.focus_student_placement) {
                 filter["focus_student_placement"] = query.focus_student_placement
-            
+
             }
             try {
                 let schema_build = new Schema(student_schema)
@@ -1042,70 +1044,78 @@ class students_services {
                 }
 
             }
+            let focus ={}
+            if (query.focus_student === 1) {
+                focus["focus_student_intern"] = 1
+            }
+            else if (query.focus_student === 2) {
+                focus["focus_student_placement"] = 1
+            }
             let fetch_batch_data = await batch_model.findOne({ _id: query.id })
             try {
                 let schema_build = new Schema(student_schema)
                 let model = mongoose.model(`${fetch_batch_data.user_id}_students`, schema_build)
-
+                
+               
                 if (ten && twelve && ug && pg && diploma) {
-                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma }, focus})
+                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null,focus })
                     if (students_find_one && students_find_two && students_find_three) {
                         let result = [...students_find_one, ...students_find_two, ...students_find_three]
                         return result
                     }
                 }
                 else if (ten && twelve && ug && diploma) {
-                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one && students_find_two && students_find_three) {
                         let result = [...students_find_one, ...students_find_two, ...students_find_three]
                         return result
                     }
                 } else if (ten && twelve && diploma) {
-                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                    let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                    let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one && students_find_two && students_find_three) {
                         let result = [...students_find_one, ...students_find_two, ...students_find_three]
                         return result
                     }
                 } else if (twelve && diploma) {
-                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_two = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                    let students_find_three = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                    let students_find_two = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                    let students_find_three = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one && students_find_two && students_find_three) {
                         let result = [...students_find_one, ...students_find_two, ...students_find_three]
                         return result
                     }
                 } else if (twelve) {
-                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one) {
                         let result = students_find_one
                         return result
                     }
                 } else if (ten) {
-                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one) {
                         let result = students_find_one
                         return result
                     }
                 } else if (ug) {
-                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                     if (students_find_one) {
                         let result = students_find_one
                         return result
                     }
                 } else if (pg) {
-                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null })
+                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null ,focus})
                     if (students_find_one) {
                         let result = students_find_one
                         return result
                     }
                 } else if (diploma) {
-                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
+                    let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
                     if (students_find_one) {
                         let result = students_find_one
                         return result
@@ -1116,64 +1126,64 @@ class students_services {
                 if (err.name === 'OverwriteModelError') {
                     let model = mongoose.model(`${fetch_batch_data.user_id}_students`)
                     if (ten && twelve && ug && pg && diploma) {
-                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null ,focus})
                         if (students_find_one && students_find_two && students_find_three) {
                             let result = [...students_find_one, ...students_find_two, ...students_find_three]
                             return result
                         }
                     }
                     else if (ten && twelve && ug && diploma) {
-                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                         if (students_find_one && students_find_two && students_find_three) {
                             let result = [...students_find_one, ...students_find_two, ...students_find_three]
                             return result
                         }
                     } else if (ten && twelve && diploma) {
-                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                        let students_find_two = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma },focus })
+                        let students_find_three = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null,focus })
                         if (students_find_one && students_find_two && students_find_three) {
                             let result = [...students_find_one, ...students_find_two, ...students_find_three]
                             return result
                         }
                     } else if (twelve && diploma) {
-                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_two = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
-                        let students_find_three = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                        let students_find_two = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
+                        let students_find_three = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                         if (students_find_one && students_find_two && students_find_three) {
                             let result = [...students_find_one, ...students_find_two, ...students_find_three]
                             return result
                         }
                     } else if (twelve) {
-                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': { "$gte": fetch_placement.percentage.twelve }, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                         if (students_find_one) {
                             let result = students_find_one
                             return result
                         }
                     } else if (ten) {
-                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': { "$gte": fetch_placement.percentage.ten }, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                         if (students_find_one) {
                             let result = students_find_one
                             return result
                         }
                     } else if (ug) {
-                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': { "$gte": fetch_placement.percentage.ug }, 'percentage.pg': null, 'percentage.diploma': null ,focus})
                         if (students_find_one) {
                             let result = students_find_one
                             return result
                         }
                     } else if (pg) {
-                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null })
+                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': { "$gte": fetch_placement.percentage.pg }, 'percentage.diploma': null ,focus})
                         if (students_find_one) {
                             let result = students_find_one
                             return result
                         }
                     } else if (diploma) {
-                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } })
+                        let students_find_one = await model.find({ 'percentage.ten': null, 'percentage.twelve': null, 'percentage.ug': null, 'percentage.pg': null, 'percentage.diploma': { "$gte": fetch_placement.percentage.diploma } ,focus})
                         if (students_find_one) {
                             let result = students_find_one
                             return result
@@ -1203,6 +1213,34 @@ class students_services {
             return err
         }
 
+    }
+    async multi_api_fetch(query) {
+        let department_fetch = await axios.get("http://localhost:2020/educare/get-department?id=" + query.department_id)
+        if (department_fetch.data.data) {
+            let batch_fetch = await axios.get("http://localhost:2020/educare/get-batch?department_id=" + department_fetch.data.data[0]._id)
+            if (batch_fetch.data.data && query.take.toLowerCase() === "one") {
+                let student_fetch = await axios.get("http://localhost:2020/educare/get-student?batch_id=" + batch_fetch.data.data[0]._id)
+                let output = {
+                    batch: batch_fetch.data.data,
+                    student: student_fetch.data.data
+                }
+                return output
+            }
+            else if (batch_fetch.data.data && query.take.toLowerCase() === "all") {
+                console.log("ertyuio", batch_fetch.data.data.length);
+                let student_arr = []
+                for (let i = 0; i < batch_fetch.data.data.length; i++) {
+                    console.log("qwertyuiosedrtyu");
+                    let student_fetch = await axios.get("http://localhost:2020/educare/get-student?batch_id=" + batch_fetch.data.data[i]._id)
+                    student_arr.push(student_fetch.data.data)
+                }
+                let output = {
+                    batch: batch_fetch.data.data,
+                    student: student_arr
+                }
+                return output
+            }
+        }
     }
 
 }

@@ -16,7 +16,8 @@ module.exports = {
         query: joi.object({
             department_name: joi.string().optional(),
             focus_student_intern:joi.number().optional(),
-            focus_student_placement:joi.number().optional()
+            focus_student_placement:joi.number().optional(),
+            id:joi.string().optional(),
 
         })
     },

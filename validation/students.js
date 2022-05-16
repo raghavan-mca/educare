@@ -103,7 +103,14 @@ module.exports = {
     students_search_query: {
         query: joi.object({
             id: joi.string().required(),
+            focus_student:joi.number().required(),
             placement_id: joi.string().required()
+        })
+    },
+    multi_api_query: {
+        query: joi.object({
+            department_id: joi.string().required(),
+            take: joi.string().required(),
         })
     },
 }
