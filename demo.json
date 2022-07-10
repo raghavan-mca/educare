@@ -39,6 +39,7 @@
             "pg": 3,
             "diploma": 4
         },
+        "front_end_gender":"male",
         "mobile": 98765,
         "alternative_mobile": 2345,
         "email": "iuhgv",

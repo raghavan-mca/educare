@@ -4,7 +4,7 @@ mongoose.connect(config.connection)
 let db = mongoose.connection;
 const Schema = mongoose.Schema;
 const student_schema = require("../models/students-model")
-
+const all_student_model = require("../models/all-students-model")
 let batch_model = require("../models/batch-model")
 let department_model = require("../models/department-creation-model")
 
@@ -57,9 +57,14 @@ class batch_services {
     async fetch_batch(query) {
         try {
             let filter = {}
+            if(query.department_id){
             filter["department_id"] = query.department_id
+            }
             if(query.focus_student){
                 filter["focus_student"] = query.focus_student
+            }
+            if(query._id){
+                filter["_id"] = query._id
             }
             let fetch_batch = await batch_model.find(filter)
             return fetch_batch
@@ -211,6 +216,9 @@ class batch_services {
                     let schema_build = new Schema(student_schema)
                     let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
                     let update_focus_student = await model.updateMany({ batch_id: params.id }, update_obj)
+                    if(update_focus_student){
+                        let focus_student = await all_student_model.updateMany({ batch_id: params.id }, update_obj)
+                    }
                     let update_department = await department_model.findOneAndUpdate({ _id: batch_fetch.department_id }, update_obj);
                     let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
                     if (update_focus_student && update_department && update_batch) {
@@ -223,7 +231,11 @@ class batch_services {
                 } catch (err) {
                     if (err.name === "OverwriteModelError") {
                         let model = mongoose.model(`${batch_fetch.user_id}_students`)
+                        
                         let update_focus_student = await model.updateMany({ batch_id: params.id }, update_obj)
+                        if(update_focus_student){
+                            let focus_student = await all_student_model.updateMany({ batch_id: params.id }, update_obj)
+                        }
                         let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
                         let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
                         if (update_focus_student && update_department && update_batch) {
@@ -251,6 +263,9 @@ class batch_services {
                     if (batch_fetch.focus_student === 0) {
                         
                         let update_focus_student = await model.updateMany(update_find_obj, update_obj)
+                        if(update_focus_student){
+                            let focus_student = await all_student_model.updateMany(update_find_obj, update_obj)
+                        }
                         let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
                         let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
                         if (update_focus_student && update_department && update_batch) {
@@ -272,6 +287,9 @@ class batch_services {
                        
                         if (batch_fetch.focus_student === 0) {
                             let update_focus_student = await model.updateMany(update_find_obj, update_obj)
+                            if(update_focus_student){
+                                let focus_student = await all_student_model.updateMany(update_find_obj, update_obj)
+                            }
                             let update_department = await department_model.updateMany({ _id: batch_fetch.department_id }, update_obj);
                             let update_batch = await batch_model.updateMany({ _id: params.id }, { focus_student: payload.field_value });
                             if (update_focus_student && update_department && update_batch) {

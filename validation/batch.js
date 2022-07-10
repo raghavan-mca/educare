@@ -12,8 +12,9 @@ module.exports = {
     },
     batch_fetch: {
         query: joi.object({
-            department_id: joi.string().required(),
-            focus_student: joi.number().optional()
+            department_id: joi.string().optional(),
+            focus_student: joi.number().optional(),
+            _id: joi.string().optional(),
         })
     },
     batch_edit: {

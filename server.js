@@ -16,6 +16,7 @@ const company_listing = require('./router/company-listing-router')
 const department = require('./router/department-router')
 const batch = require('./router/batch-router')
 const student = require('./router/students-router')
+const report = require("./router/reports-router")
 
 app.use(file_uploade({
     useTempFiles : true,
@@ -26,6 +27,7 @@ app.use(company_listing)
 app.use(department)
 app.use(batch)
 app.use(student)
+app.use(report)
 app.use(apierrorHandler)
 
 app.use((req, res, next) => {

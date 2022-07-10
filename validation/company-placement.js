@@ -7,6 +7,7 @@ module.exports = {
             job_role: joi.string().optional().allow(""),
             placement_date: joi.string().optional().allow(""),
             registration_date: joi.string().optional().allow(""),
+            type: joi.number(),
             salary: {
                 min_salary: joi.number().optional().allow(null),
                 max_salary: joi.number().optional().allow(null),
@@ -66,6 +67,7 @@ module.exports = {
                 diploma: joi.number().min(1).max(101).optional().allow(null),
             },
             open_to_all: joi.number().optional(),
+            type: joi.number().optional(),
 
         }),
 

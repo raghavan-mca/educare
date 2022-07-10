@@ -28,6 +28,14 @@ const company_list_schema = new Schema({
         type:Number,
         default:0
     },
+    total_student_attend:{
+        type:Number,
+        default:0
+    },
+    total_selected_student:{
+        type:Number,
+        default:0
+    },
     id:{
         type:String,
         required:true,

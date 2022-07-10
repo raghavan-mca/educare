@@ -6,10 +6,10 @@ module.exports = {
             department_name: joi.string().required(),
             category: joi.string().required(),
             duration: joi.string().required(),
-            department_head: joi.string().optional().allow(null),
-            incharge: joi.string().optional().allow(null),
+            department_head: joi.string().optional().allow(""),
+            incharge: joi.string().optional().allow(""),
             incharge_phone: joi.number().optional().allow(null),
-            incharge_mail: joi.string().optional().allow(null),
+            incharge_mail: joi.string().optional().allow(""),
         })
     },
     department_fetch: {
@@ -26,10 +26,10 @@ module.exports = {
             department_name:joi.string().required(),
             category:joi.string().required(),
             duration:joi.string().required(),
-            department_head:joi.string().optional().allow(null),
-            incharge:joi.string().optional().allow(null),
+            department_head:joi.string().optional().allow(""),
+            incharge:joi.string().optional().allow(""),
             incharge_phone:joi.number().optional().allow(null),
-            incharge_mail:joi.string().optional().allow(null),
+            incharge_mail:joi.string().optional().allow(""),
             
         })
     },

@@ -7,6 +7,10 @@ const company_placement_schema = new Schema({
         required:true,
         index:true
     },
+    type:{
+        type:Number,
+        required:true,
+    },
     job_role:{
         type:String
     },
