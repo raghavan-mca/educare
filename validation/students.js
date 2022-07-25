@@ -31,8 +31,7 @@ module.exports = {
             department_id: joi.string().optional(),
             name: joi.string().optional(),
             roll_no: joi.string().optional(),
-            focus_student_intern:joi.number().optional(),
-            focus_student_placement:joi.number().optional()
+           
 
         })
     },
@@ -85,18 +84,6 @@ module.exports = {
             ids: joi.array().required(),
         })
     },
-    students_transfer_params: {
-        params: joi.object({
-            id: joi.string().required(),
-        })
-    },
-    students_transfer_body: {
-        body: joi.object({
-            ids: joi.array().required(),
-            field: joi.string().required(),
-            field_value: joi.number().required(),
-        })
-    },
     students_upload_params: {
         params: joi.object({
             id: joi.string().required(),
@@ -107,12 +94,6 @@ module.exports = {
             id: joi.string().required(),
             focus_student:joi.number().required(),
             placement_id: joi.string().required()
-        })
-    },
-    multi_api_query: {
-        query: joi.object({
-            department_id: joi.string().required(),
-            take: joi.string().required(),
         })
     },
 }

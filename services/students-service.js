@@ -184,13 +184,6 @@ class students_services {
                 }
 
             }
-            if (query.focus_student_intern) {
-                filter["focus_student_intern"] = query.focus_student_intern
-            }
-            if (query.focus_student_placement) {
-                filter["focus_student_placement"] = query.focus_student_placement
-
-            }
             try {
                 let schema_build = new Schema(student_schema)
                 let model = mongoose.model(`${fetch_batch_data.user_id}_students`, schema_build)
@@ -619,148 +612,6 @@ class students_services {
         }
 
     }
-    async student_transfer(payload, params) {
-        try {
-            let batch_fetch = await batch_model.findOne({ _id: params.id })
-
-            let department_fetch = await department_model.findOne({ _id: batch_fetch.department_id })
-            let limit
-            let focus
-            let count
-            let value
-            if (payload.field === "intern") {
-
-                count = department_fetch.intern_offer_letter
-                limit = "intern_offer_letter"
-                focus = "focus_student_intern"
-                value = 1
-            } else if (payload.field === "placement") {
-                count = department_fetch.placement_offer_letter
-                limit = "placement_offer_letter"
-                focus = "focus_student_placement"
-                value = 2
-            }
-            let update_find_obj = {}
-            update_find_obj[`${limit}`] = { $lt: count }
-
-            let obj = {}
-            obj[`${limit}`] = { $gte: count }
-
-            if (batch_fetch.focus_student === 0 && department_fetch[`${focus}`] === 0 && payload.field_value != 0) {
-                try {
-
-                    let schema_build = new Schema(student_schema)
-                    let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
-                    let find_limit = await model.find(obj)
-                    let update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
-                    if(update_focus_student){
-                        let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
-                    }
-                    let update_batch_focus_student = await batch_model.updateMany({ _id: params.id }, { focus_student: value })
-                    let update_departmenbt_focus_student = await department_model.updateOne({ _id: batch_fetch.department_id }, { [`${focus}`]: 1 })
-                    if (update_focus_student && update_batch_focus_student && update_departmenbt_focus_student) {
-                        let output = {
-                            skip: find_limit.length,
-                            total_student_shifted: payload.ids.length - find_limit.length
-                        }
-                        return output
-                    }
-                }
-                catch (err) {
-                    if (err.name === 'OverwriteModelError') {
-
-                        let model = mongoose.model(`${batch_fetch.user_id}_students`)
-                        let find_limit = await model.find(obj)
-
-                        let update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
-                        if(update_focus_student){
-                            let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids }, update_find_obj }, { [`${focus}`]: 1 })
-                        }
-                        let update_batch_focus_student = await batch_model.updateMany({ _id: params.id }, { focus_student: value })
-                        let update_departmenbt_focus_student = await department_model.updateOne({ _id: batch_fetch.department_id }, { [`${focus}`]: 1 })
-                        if (update_focus_student && update_batch_focus_student && update_departmenbt_focus_student) {
-                            let output = {
-                                skip: find_limit.length,
-                                total_student_shifted: payload.ids.length - find_limit.length
-                            }
-                            return output
-                        }
-                    }
-                }
-            } else if (batch_fetch.focus_student === value && department_fetch[`${focus}`] === 1) {
-
-                let update_focus_student
-                try {
-                    let schema_build = new Schema(student_schema)
-                    let model = mongoose.model(`${batch_fetch.user_id}_students`, schema_build)
-                    if (payload.field_value != 0) {
-
-                        update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
-                        if(update_focus_student){
-                            let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
-                        }
-                    } else if (payload.field_value === 0) {
-                        update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids } }, { [`${focus}`]: 0 })
-                        if(update_focus_student){
-                            let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids } }, { [`${focus}`]: 0 })
-                        }
-                    }
-                    if (update_focus_student) {
-                        let output = {
-                            skip: payload.ids.length - update_focus_student.modifiedCount,
-                            total_student_shifted: update_focus_student.modifiedCount
-                        }
-                        return output
-                    }
-                }
-                catch (err) {
-                    if (err.name === 'OverwriteModelError') {
-                        let model = mongoose.model(`${batch_fetch.user_id}_students`)
-                        if (payload.field_value != 0) {
-                            update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
-                            if(update_focus_student){
-                                let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids }, [`${limit}`]: { $lt: count } }, { [`${focus}`]: 1 })
-                            }
-                        } else if (payload.field_value === 0) {
-                            update_focus_student = await model.updateMany({ "roll_no": { "$in": payload.ids }, [`${focus}`]: 1 }, { [`${focus}`]: 0 })
-                            if(update_focus_student){
-                                let focus_student = await all_student_model.updateMany({ "roll_no": { "$in": payload.ids }, [`${focus}`]: 1 }, { [`${focus}`]: 0 })
-                            }
-                        }
-                        if (update_focus_student) {
-                            let output = {
-                                skip: payload.ids.length - update_focus_student.modifiedCount,
-                                total_student_shifted: update_focus_student.modifiedCount
-                            }
-                            return output
-                        }
-                    }
-                }
-            } else {
-                return "already in another domine"
-            }
-        } catch (err) {
-            let err_function = new Error(err)
-            let err_message = err_function.message
-            let err_message_arr = err_message.split(':')
-
-            if (err_message_arr[0] === 'ReferenceError') {
-                let error = {
-                    "code": 500,
-                    "ErrorMessage": err_message
-                }
-                return error
-            }
-            if (err_message_arr[0] === 'MongoServerError') {
-                let error = {
-                    "code": 11000,
-                    "ErrorMessage": err_message
-                }
-                return error
-            }
-            return err
-        }
-    };
     async file_uplode(payload, params) {
         try {
             const csvFilePath = payload.file.tempFilePath
@@ -1103,12 +954,6 @@ class students_services {
 
             }
             let focus ={}
-            if (query.focus_student === 1) {
-                focus["focus_student_intern"] = 1
-            }
-            else if (query.focus_student === 2) {
-                focus["focus_student_placement"] = 1
-            }
             let fetch_batch_data = await batch_model.findOne({ _id: query.id })
             try {
                 let schema_build = new Schema(student_schema)
@@ -1272,54 +1117,6 @@ class students_services {
         }
 
     }
-    async multi_api_fetch(query) {
-        let department_fetch = await axios.get("http://localhost:2020/educare/get-department?id=" + query.department_id)
-        if (department_fetch.data.data) {
-            let batch_fetch = await axios.get("http://localhost:2020/educare/get-batch?department_id=" + department_fetch.data.data[0]._id)
-            if (batch_fetch.data.data && query.take.toLowerCase() === "one") {
-                let student_fetch = await axios.get("http://localhost:2020/educare/get-student?batch_id=" + batch_fetch.data.data[0]._id)
-                let output = {
-                    batch: batch_fetch.data.data,
-                    student: student_fetch.data.data
-                }
-                return output
-            }
-            else if (batch_fetch.data.data && query.take.toLowerCase() === "all") {
-                let student_arr = []
-                for (let i = 0; i < batch_fetch.data.data.length; i++) {
-                    let student_fetch = await axios.get("http://localhost:2020/educare/get-student?batch_id=" + batch_fetch.data.data[i]._id)
-                    student_arr.push(student_fetch.data.data)
-                }
-                let output = {
-                    batch: batch_fetch.data.data,
-                    student: student_arr
-                }
-                return output
-            }
-        }
-    }
-    async students_direct_fetch(query){
-        let filter = {}
-        if(query.batch_id){
-            filter["batch_id"]=query.batch_id
-        }
-        if(query.department_id){
-            filter["department_id"]=query.department_id
-        }
-        if(query.focus_student_intern){
-            filter["focus_student_intern"]=query.focus_student_intern
-        }
-        if(query._id){
-            filter["_id"]=query._id
-        }
-        if(query.focus_student_placement){
-            filter["focus_student_placement"]=query.focus_student_placement
-        }
-        let fetch_student = await all_student_model.find(filter)
-        return fetch_student
-        
-    }
-
 }
 
 

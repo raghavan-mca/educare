@@ -1,2 +1,2 @@
 PORT = 2020
-DB_CONNECTION = "mongodb://localhost:27017/placement"
+DB_CONNECTION = "mongodb+srv://sankmr211:Santhosh123@cluster0.tu5kk.mongodb.net/?retryWrites=true&w=majority"

@@ -28,3 +28,12 @@
 
 
 
+bugs
+no of students count (pending)
+registration date joi (completed)
+
+
+features
+students apply placement (pending)
+registration status filter (pending)
+
