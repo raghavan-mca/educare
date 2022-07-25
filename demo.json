@@ -1,0 +1,67 @@
+{
+    "placement_listing_payload": {
+        "company_name": "educare",
+        "job_role": "llll",
+        "placement_date": "2022-02-10",
+        "registration_date": "2022-02-10",
+        "salary": {
+            "min_salary": 99887,
+            "max_salary": 89070
+        },
+        "registration_link": "uuuuuuuu",
+        "company_website": "www",
+        "location": "chennai",
+        "company_email": "@",
+        "percentage": {
+            "ten": 100,
+            "twelve": 49,
+            "ug": 78,
+            "pg": 67,
+            "diploma": 23
+        },
+        "open_to_all": 1
+    },
+    "company_listing_payload": {
+        "company_name": "dog",
+        "website": "nlkjhnn",
+        "email": "wkedfnbhonkjnb"
+    },
+    "student": {
+        "name": "oiuhgfc",
+        "age": 345,
+        "dob": "oiugvc",
+        "gender": 1,
+        "roll_no": "oiuhg",
+        "percentage": {
+            "ten": 1,
+            "twelve": 1,
+            "ug": 2,
+            "pg": 3,
+            "diploma": 4
+        },
+        "front_end_gender":"male",
+        "mobile": 98765,
+        "alternative_mobile": 2345,
+        "email": "iuhgv",
+        "batch_id": "ertyu"
+    },
+    "department": {
+        "department_name": "mca",
+        "category": "pg",
+        "duration": "2",
+        "department_head": "sujatha",
+        "incharge": "shankar",
+        "incharge_phone": 1234567890,
+        "incharge_mail": "qwertyuiop"
+    },
+    "batch": {
+        "user_id": "sdfghjk",
+        "batch": "2022",
+        "department_id": "62583ce0534f975d1e19a8be",
+        "year":"wertyu"
+    },
+    "mass_transfer": {
+        "field": "intern or placement", 
+        "field_value": 120
+    }
+}
